@@ -1,0 +1,678 @@
+<?php
+
+module_load_include('inc','fedcorefront','inc/custom');
+module_load_include('inc','cursos','inc/custom');
+module_load_include('inc','cursos','inc/custom-cursos-sugeridos');
+module_load_include('inc','fedcorefront','includes/global.copywrite');
+drupal_add_css(drupal_get_path('theme', 'future_ed') . '/custom-scss/listados.css');
+
+function cursos_theme($existing,$type,$theme,$path) {   
+  return array(
+    'cursos' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/cursos',
+    ),
+    'header_curso' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/header_curso',
+    ),
+    'ver_curso' => array(
+        'variables' => array('curso'=>NULL),
+        'template' => ''
+    ),
+     'proyectos_curso' => array(
+            'variables' => array('proyectos_curso'=>NULL),
+            'template' => 'templates/proyectos_curso'
+    ),
+     'listado_proyectos_curso' => array(
+            'variables' => array('item'=>NULL,'anchoColumnas='>NULL),
+            'template' => 'templates/listado_proyectos_curso'
+    ),
+     'calificaciones_curso' => array(
+            'variables' => array('calificaciones_curso'=>NULL),
+            'template' => 'templates/calificaciones_curso'
+    ),
+     'resumen_calificaciones_curso' => array(
+            'variables' => array('item'=>NULL),
+            'template' => 'templates/resumen_calificaciones_curso'
+    ),
+     'curso-sugerido-elemento-carrusel' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/widget-cursos-sugeridos'                
+    ),
+     'elemento-cursos-usuario' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/elemento-cursos-usuario'                
+    ),
+     'preguntas-frecuentes-curso' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/preguntas_frecuentes_curso'                
+    )
+     ,
+     'precio-futureed-curso' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/precio_futureed_curso'                
+    ),
+     'menu-curso' => array(
+            'template' => 'templates/ver-curso-menu'                
+    ),
+     'fecha-curso' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/fecha_curso'                
+    ),'caracteristicas-curso' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/caracteristicas_principales_curso'                
+    ),'caracteristicas-curso' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/caracteristicas_principales_curso'                
+    ),'informacion-tutor' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/informacion_tutor_curso'                
+    ),'grupos-curso' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/grupos_curso'                
+    ),'informacion-curso' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/informacion_curso'                
+    ),'likes-usuarios-curso' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/lista-usuarios-likes-curso'                
+    ),'contenido-tabs-curso' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/contenido-tabs-curso'                
+    ),'elemento-cursos-populares' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/elemento_listado_cursos_populares'                
+    ),'listado-cursos-populares' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/listado_cursos_populares'                
+    ),'filtros-cursos' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/listados/filtros_cursos'                
+    ),'elemento-cursos-por-categoria' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/listados/elemento_listado_cursos_por_categoria'                
+    ),'listado-cursos-por-categoria' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/listados/listado_cursos_por_categoria'
+    ),'listado-categorias-fijo' => array(
+            'variables' => array('item'=>NULL),
+            'template' => 'templates/listados/busqueda_categoria_fijo'
+    ),
+    /*Invitaciones*/
+    'invitacion_registro' => array(
+      'template' => 'templates/invitaciones/invitacion_registro',
+      'variables' => array('items' => NULL,),
+    ),
+    'invitacion_crear_curso' => array(
+      'template' => 'templates/invitaciones/invitacion_crear_curso',
+      'variables' => array('items' => NULL,),
+    ),
+    /**/
+
+    /*Cursos Sugeridos*/
+    'cursos_sugeridos' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/cursos_sugeridos/cursos_sugeridos',
+    ),
+    'item_cursos_sugeridos' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/cursos_sugeridos/item_cursos_sugeridos',
+    ),
+    /*****************/
+  ); 
+}
+
+function cursos_menu(){  
+  $items['cursos'] = array(
+    'title' => 'Ver Cursos',
+    'page callback' => 'cursos_void',
+    'page arguments' => array(NULL),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,    
+  );
+  
+    $items['curso'] = array(
+    'title' => 'Ver Cursos',
+    'page callback' => 'cursos_void',
+    'page arguments' => array(NULL)
+  );
+    
+    $items['cursos-populares'] = array(
+    'title' => 'Ver Cursos',
+    'page callback' => 'cursos_void',
+    'page arguments' => array(NULL)
+  );     
+  
+  return $items; 
+}
+    
+function mostrar_curso()
+{
+    return theme('ver_curso',array('items' => $items));
+    /*drupal_add_js(base_path().drupal_get_path('module','cursos').'/js/app.js');
+    $nid_curso = arg(1);
+    $items['data'] = consultar_curso_db($nid_curso);
+    //mostrar_comentarios_curso();
+    return theme('ver_curso',array('items' => $items));        */
+}
+
+function cursos_block_info() {
+    //var_dump($variables['info_curso']);
+  $blocks['cursosHeader_block'] = array(
+        'info' => t('Cursos - Cursos Header'),
+        'cache' => DRUPAL_NO_CACHE,  //Recomendado para desarrollo
+  );
+  
+  $blocks['cursosPrecio_block'] = array(
+        'info' => t('Cursos - Cursos Precio'),
+        'cache' => DRUPAL_NO_CACHE,  //Recomendado para desarrollo
+  );
+  
+  $blocks['verCursoMenu_block'] = array(
+        'info' => t('Cursos - Cursos Menu Curso'),
+        'cache' => DRUPAL_NO_CACHE,  //Recomendado para desarrollo
+  );
+  
+  $blocks['fechaCurso_block'] = array(
+        'info' => t('Cursos - Fecha Curso'),
+        'cache' => DRUPAL_NO_CACHE,  //Recomendado para desarrollo
+  );
+  
+  $blocks['caractCurso_block'] = array(
+        'info' => t('Cursos - Caracteristicas principales curso'),
+        'cache' => DRUPAL_NO_CACHE,  //Recomendado para desarrollo
+  );
+  
+  $blocks['infoTutorCurso_block'] = array(
+        'info' => t('Cursos - Informacion del tutor'),
+        'cache' => DRUPAL_NO_CACHE,  //Recomendado para desarrollo
+  );     
+
+  $blocks['listaGruposCurso_block'] = array(
+        'info' => t('Cursos - Lista Grupos del Curso'),
+        'cache' => DRUPAL_NO_CACHE,  //Recomendado para desarrollo
+  );
+  
+  $blocks['cursosRecomendados_block'] = array(
+        'info' => t('Cursos - Cursos Recomendados'),
+        'cache' => DRUPAL_NO_CACHE,  //Recomendado para desarrollo
+  );
+  
+  $blocks['contenidoTabsCurso_block'] = array(
+        'info' => t('Cursos - Contenido Tabs ver curso'),
+        'cache' => DRUPAL_NO_CACHE,  //Recomendado para desarrollo
+  );    
+    
+  $blocks['lista-comentarios-curso-block'] = array(
+    'info' => t('Cursos - Lista de comentarios curso'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  
+  $blocks['carrusel-cursos-usuario-block'] = array(
+    'info' => t('Cursos - Carrusel de cursos de un usuario'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  
+  $blocks['grid-cursos-populares-block'] = array(
+    'info' => t('Cursos - Listado grid cursos populares'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  
+  $blocks['resumen-cursos-populares'] = array(
+    'info' => t('Cursos - Resumen grid cursos populares'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  
+  $blocks['grid-cursos-por_cat-block'] = array(
+    'info' => t('Cursos - Listado grid cursos cat'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  
+  $blocks['listado-categorias-fijo-block'] = array(
+    'info' => t('Cursos - Listado categorias fijo'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );    
+  
+  /**/
+  $blocks['bloque-invitacion-registro'] = array(
+    'info' => t('Invitacion - Registrarse'), 
+    'cache' => DRUPAL_NO_CACHE, 
+  );
+  $blocks['bloque-invitacion-crear-curso'] = array(
+    'info' => t('Invitacion - Crear Cursos'), 
+    'cache' => DRUPAL_NO_CACHE, 
+  );
+  /**/
+
+  /*Bloque - Cursos sugeridos*/
+  $blocks['cursos-sugeridos'] = array(
+    'info' => t('Cursos Sugeridos'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  /***************************/
+  return $blocks;
+}
+
+function cursos_block_view($delta = '') {
+  $block = array();
+
+  $nid_curso = arg(1);
+  
+  switch ($delta) {
+        case 'cursosHeader_block':                            
+                $block['subject'] = t('');
+                $block['content'] = print_header_curso($nid_curso);                
+          break;
+        
+        case 'cursosPrecio_block':
+                //$block['subject'] = t('');
+                $block['content'] = print_precio_cursos($nid_curso);
+          break;
+        case 'verCursoMenu_block':
+                $block['content'] = print_menu_curso();
+          break;
+        case 'fechaCurso_block':
+                $block['content'] = print_fecha_curso($nid_curso);
+          break;
+        case 'caractCurso_block':
+                $block['content'] = print_caracteristicas_principales_curso($nid_curso);
+          break;
+        case 'infoTutorCurso_block':
+                $block['content'] = print_info_tutor_curso($nid_curso);
+          break;
+        case 'listaGruposCurso_block':
+                $block['content'] = print_lista_grupos_curso($nid_curso);
+          break;
+        case 'cursosRecomendados_block':
+                $block['content'] = print_cursos_recomendados($nid_curso);
+          break;
+        case 'contenidoTabsCurso_block':
+                $block['content'] = print_content_tabs_curso($nid_curso);
+          break;
+        case 'carrusel-cursos-usuario-block':
+                $uid_usuario = arg(1);
+                $block['content'] = mostrar_carrusel_cursos_usuario($uid_usuario);
+          break;
+        case 'grid-cursos-populares-block':
+                $item = array('resumen' =>false);                
+                $block['content'] = theme('listado-cursos-populares', array('item' => $item));
+          break;
+        case 'resumen-cursos-populares':
+                $item = array('resumen' =>true);                
+                $block['content'] = theme('listado-cursos-populares', array('item' => $item));
+          break;
+        case 'grid-cursos-por_cat-block':
+                $tid_categoria = arg(2);
+             
+                $padre_taxonomia = get_padre_taxonomia($tid_categoria);
+                $taxonomia = $padre_taxonomia->taxonomia;
+                $padre = $padre_taxonomia->padre;
+                if (is_null($padre)){
+                    $nombre_categoria = $taxonomia->name;
+                    $nombre_subcategoria = null;    
+                }else{
+                    $nombre_categoria = $padre->name;
+                    $nombre_subcategoria = $taxonomia->name;                   
+                }
+                $item = array('tid_categoria' =>$tid_categoria, 'nombre_categoria' => $nombre_categoria, 'nombre_subcategoria' => $nombre_subcategoria);                
+                $block['content'] = theme('listado-cursos-por-categoria', array('item' => $item));
+          break;                       
+        case 'lista-comentarios-curso-block':
+                //$nid_curso = arg(1);
+                $item = array('f_name' =>'print_comentarios_curso',
+                              'theme' =>'lista-comentarios',
+                              'parametros' => 'nid_curso: '.$nid_curso);            
+                $block['content'] = theme('lista-comentarios', array('item' => $item));                   
+          break;
+        case 'listado-categorias-fijo-block':
+                $lista_categorias = array();
+                $lista_categorias = consultar_categorias();                
+                $block['content'] = theme('listado-categorias-fijo', array('lista_categorias' => $lista_categorias));                   
+          break;
+    /**/
+    case 'bloque-invitacion-registro':
+      $block['content'] = show_invitacion_registro($delta);
+      return $block;
+      break; 
+    case 'bloque-invitacion-crear-curso':
+      $block['content'] = show_invitacion_crear_curso($delta);
+      return $block;
+      break; 
+    /**/
+    /*Bloque - Cursos sugeridos*/
+    case 'cursos-sugeridos':
+      $block['content'] = show_cursos_sugeridos($delta);
+      return $block;
+      break;
+    /***************************/
+  }
+  return $block;
+}
+
+
+function print_header_curso($nid_curso)
+{
+    $items = consultar_header_curso_db($nid_curso);
+    return theme('header_curso', array('info_curso' => $items[0]));	
+}
+
+function print_precio_cursos($nid_curso)
+{
+    $items = consultar_precio_curso_db($nid_curso);
+    return theme('precio-futureed-curso', array('info_curso' => $items[0]));	
+}
+
+function print_menu_curso()
+{
+    return theme('menu-curso');	
+}
+
+function print_content_tabs_curso($nid_curso)
+{
+    $items = consultar_curso_info_gral_db($nid_curso);
+    return theme('contenido-tabs-curso', array('info_curso' => $items[0]));	
+}
+
+function print_fecha_curso($nid_curso)
+{
+    $items = consultar_curso_fecha_db($nid_curso);
+    return theme('fecha-curso', array('info_curso' => $items[0]));	
+}
+
+function print_caracteristicas_principales_curso($nid_curso)
+{
+    $items = consultar_curso_caracteristicas_principales_db($nid_curso);
+    return theme('caracteristicas-curso', array('info_curso' => $items[0]));    
+}
+
+function print_info_tutor_curso($nid_curso)
+{
+    $items = consultar_curso_tutor_db($nid_curso);
+    
+    return theme('informacion-tutor', array('info_tutor' => $items[0]));      
+}
+
+function print_lista_grupos_curso($nid_curso)
+{
+    $items = consultar_grupos_curso_db($nid_curso);
+    return theme('grupos-curso', array('items' => $items[0]));       
+}
+
+function print_cursos_recomendados()
+{
+    
+    $id_slider = 'carrusel-cursos-recomendados-slider';
+    $resultados_por_pantalla = 4;
+    $tpl = 'curso-sugerido-elemento-carrusel';
+    $titulo = 'CURSOS RECOMENDADOS';
+    $tipo = 'cursos';
+    
+    $items = consultar_curso_recomendados($nid_curso);
+    
+    return mostrar_carrusel($resultados_por_pantalla, $items[0], $tpl, $id_slider, $titulo, $tipo);    
+}
+
+function mostrar_carrusel_cursos_usuario($uid_usuario)
+{
+    global $user;
+    $id_slider = 'slider-cursos-usuarios';
+    $resultados_por_pantalla = 3;
+
+    $tpl = 'elemento-cursos-usuario';
+    $titulo = CURSOS;
+    $tipo = 'cursos';
+    
+    $items = consultar_cursos_usuario_db($uid_usuario);
+    
+    $privacidad = $items[0]['field_usuario_privacidad_canales'];
+
+    if ($privacidad == 0){
+        return '';
+    }
+    
+    if (isset($items[0]['array_cursos']) AND !is_null($items[0]['array_cursos'])){
+        $info = $items[0]['array_cursos'];
+        return  mostrar_carrusel($resultados_por_pantalla, $info, $tpl, $id_slider, $titulo, $tipo);    
+    }else{
+    
+        if ($user->uid != $uid_usuario){   //Si no se esta viendo el perfil propio
+            $mensaje = $items[0]['calc_usuario_nombre']." ".NO_TIENE_CURSOS_ACTIVOS."<br>".PUEDES_SUGERIRLE_UN_CURSO;
+            $titulo = CURSOS;
+            $tipo_carrusel   = "canales";
+            $label_boton = SUGERIR_CURSO;
+            $modal_sugerir = "modal-sugerir-curso";
+            $items = array('mensaje' => $mensaje, 'titulo' => $titulo, 'label_boton' => $label_boton, 'modal_sugerir' => $modal_sugerir,'tipo_carrusel' => $tipo_carrusel);
+            return theme('carrusel_error', array('item' => $items));
+        }
+    }    
+    
+    
+}
+
+
+function print_preguntas_frecuentes($nid)
+{
+    $items = consultar_preguntas_frecuentes($nid);
+    //return "llega";
+    
+    print theme('preguntas-frecuentes-curso', array('items' => $items[0]));
+}
+
+function mostrar_proyectos_curso($nid_curso, $pagina, $div_contenedor)
+{
+    $resultadosPorPagina = 9;
+    $resultadosPorLinea = 3;
+
+    if ($pagina == null)
+        $pagina = 1;
+    
+    $f_name = 'mostrar_proyectos_curso';
+    //$parametros = 'nid_curso: '.$nid_curso.', div_contenedor: \\\''.$div_contenedor.'\\\'';
+    $parametros = 'nid_curso: '.$nid_curso;
+    $tema_paginacion = 'paginacion';  
+    
+    $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+    $lim_fin = $pagina * $resultadosPorPagina;
+    
+    $items = consultar_proyectos_cursos_db($nid_curso, $lim_ini, $lim_fin);    
+    $itemsProyectos = $items[0]['items'];
+    $totalResultados = $items[0]['totalResultados']; 
+
+    mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos, 'listado_proyectos_curso');//elementos por línea, elementos por página, array de items (debe incluir 'totalResultados'), path del tpl por elemento
+    mostrar_paginacion($resultadosPorPagina,$itemsProyectos,$totalResultados,$f_name,$parametros,$div_contenedor,$tema_paginacion, $pagina);//elementos por página, array de items, total de resultados, nombre de la función que se cargará con ajax, parametros que se enviarán a la función,  div donde se cargará el ajax, theme de paginacion, pagina actual    
+}
+
+function mostrar_resumen_calificaciones($nid_curso)
+{
+    $nid_curso = 5;
+            
+    $items['data'] = consultar_curso_calificaciones($nid_curso);
+    print theme('resumen_calificaciones_curso', array('item' => $items['data'][0]));	    
+}
+
+function mostrar_calificaciones_curso($nid_curso, $pagina, $div_contenedor)
+{
+    $resultadosPorPagina = 2;
+    $resultadosPorLinea = 1;
+
+    if ($pagina == null)
+        $pagina = 1;
+    
+    $f_name = 'mostrar_calificaciones_curso';
+    $parametros = 'nid_curso: '.$nid_curso;
+    $tema_paginacion = 'paginacion';  
+    
+    $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+    $lim_fin = $pagina * $resultadosPorPagina;
+    
+    $items = consultar_curso_opiniones_calificaciones($nid_curso, $lim_ini, $lim_fin);
+    
+    $itemsOpiniones = $items[0]['items'];
+    $totalResultados = $items[0]['totalResultados']; 
+
+    mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsOpiniones, 'calificaciones_curso');//elementos por línea, elementos por página, array de items (debe incluir 'totalResultados'), path del tpl por elemento
+    mostrar_paginacion($resultadosPorPagina,$itemsOpiniones,$totalResultados,$f_name,$parametros,$div_contenedor,$tema_paginacion, $pagina);//elementos por página, array de items, total de resultados, nombre de la función que se cargará con ajax, parametros que se enviarán a la función,  div donde se cargará el ajax, theme de paginacion, pagina actual            
+}
+
+function mostrar_grid_cursos_populares($pagina, $div_contenedor, $resumen)
+{
+    if ($resumen == true){
+      $resultadosPorPagina = 9;
+      $resultadosPorLinea = 3;
+      $parametros = 'resumen: true';
+    }else{
+      $resultadosPorPagina = 12;
+      $resultadosPorLinea = 4;
+      $parametros = 'resumen: false';
+    }
+    
+    if ($pagina == null)
+        $pagina = 1;    
+    
+    $f_name = 'mostrar_grid_cursos_populares';    
+    $tema_paginacion = 'paginacion';  
+    
+    $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+    $lim_fin = $pagina * $resultadosPorPagina;
+    
+    $items = consultar_cursos_populares_db($lim_ini, $lim_fin);
+    
+    $itemsCursos = $items[0]['items'];
+    $totalResultados = $items[0]['totalResultados']; 
+
+    mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsCursos, 'elemento-cursos-populares');//elementos por línea, elementos por página, array de items (debe incluir 'totalResultados'), path del tpl por elemento
+    
+    if ($resumen == 'false')
+      mostrar_paginacion($resultadosPorPagina,$itemsCursos,$totalResultados,$f_name,$parametros,$div_contenedor,$tema_paginacion, $pagina);//elementos por página, array de items, total de resultados, nombre de la función que se cargará con ajax, parametros que se enviarán a la función,  div donde se cargará el ajax, theme de paginacion, pagina actual
+}
+
+function mostrar_grid_cursos_categoria($pagina, $div_contenedor, $categoria, $modalidad, $ordenamiento, $calificacion, $rango_precio_min, $rango_precio_max)
+{        
+              /*//$data = '?f_name=get_empresa_header&uid=1';
+              $data = '?f_name=get_empresa_acerca&uid=1';        
+              $data = get_data_from_service($data, false);  
+                var_dump($data);
+              */
+              
+              //var_dump($categoria);
+              
+    $resultadosPorPagina = 12;
+    $resultadosPorLinea = 4;
+    if ($pagina == null)
+        $pagina = 1;
+        
+    $arrFiltros = array();
+    
+    array_push($arrFiltros,
+                array(
+                  'categoria' => $categoria,    
+                  'modalidad' => $modalidad,  
+                  //'tipo' => $tipo,
+                  'ordenamiento' => $ordenamiento,
+                  'calificacion' => $calificacion,
+                  'rango_precio_min' =>  $rango_precio_min,
+                  'rango_precio_max' =>  $rango_precio_max
+                  ));
+    
+    
+    $f_name = 'mostrar_grid_cursos_categoria';
+    $parametros = '';
+    $tema_paginacion = 'paginacion';  
+    
+    $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+    $lim_fin = $pagina * $resultadosPorPagina;
+    
+    $items = consultar_cursos_categoria_db($arrFiltros[0], $lim_ini, $lim_fin);
+    
+    $itemsCursos = $items[0]['items']; //PARA DEBUG DATOS DUMMY
+    $totalResultados = $items[0]['totalResultados'];     //PARA DEBUG DATOS DUMMY
+    
+    //$itemsCursos = $items;
+    //$totalResultados = sizeof($items); 
+
+    mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsCursos, 'elemento-cursos-por-categoria');//elementos por línea, elementos por página, array de items (debe incluir 'totalResultados'), path del tpl por elemento
+    mostrar_paginacion($resultadosPorPagina,$itemsCursos,$totalResultados,$f_name,$parametros,$div_contenedor,$tema_paginacion, $pagina);//elementos por página, array de items, total de resultados, nombre de la función que se cargará con ajax, parametros que se enviarán a la función,  div donde se cargará el ajax, theme de paginacion, pagina actual
+   
+
+}
+
+function print_comentarios_curso($nid_curso, $ultimo_nid_comentario, $div_contenedor)
+{
+    $limite = 3;
+    $resultadosPorLinea = 1;
+
+    $comentarios  = consultar_comentarios_curso($nid_curso,$ultimo_nid_comentario,$limite);
+
+    mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $comentarios, 'elemento-comentario');//elementos por línea, elementos por página, array de items (debe incluir 'totalResultados'), path del tpl por elemento
+    
+    $tema_ver_mas = 'ver-mas';
+    $f_Name = 'print_comentarios_curso';
+    $parametros = 'nid_curso: '.$nid_curso;
+    $ultimo_nid_ver_mas = obtener_ultimo_nid($comentarios, 'nid');
+    //var_dump($comentarios);
+    mostrar_ver_mas($tema_ver_mas,$div_contenedor,$f_Name,$parametros,$ultimo_nid_ver_mas);    
+}
+
+function print_lista_megusta_curso($nid_curso, $ultimo_nid, $div_contenedor)
+{
+    $limite = 3;
+    $resultadosPorLinea = 1;
+    $resultadosPorPagina = $limite;
+
+    $items  = consultar_likes_usuarios_curso($nid_curso,$ultimo_nid,$limite);
+    mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $items, 'elemento_lista_usuarios');//elementos por línea, elementos por página, array de items (debe incluir 'totalResultados'), path del tpl por elemento
+    
+    $tema_ver_mas = 'ver-mas';
+    $f_Name = 'print_lista_megusta_curso';
+    $parametros = 'nid_curso: '.$nid_curso;
+    $ultimo_nid_ver_mas = obtener_ultimo_nid($items, 'nid');  
+    mostrar_ver_mas($tema_ver_mas,$div_contenedor,$f_Name,$parametros,$ultimo_nid_ver_mas);    
+}
+
+
+/**
+* Función que sirve para regresar un null, que sólamente se necesita
+* para poder agregar algún path al sistema y que no devuelva "page not found".
+* en realidad, se puede utilizar para regresar un null a cualquier otra función, 
+* sin que Drupal marque un error.
+* Desarrollado por David Terrones
+* el 2 de Diciembre del 2014
+*/
+function cursos_void(){
+    return "";
+}
+
+/*************************************************************/
+function show_invitacion_registro(){
+  return theme('invitacion_registro');
+}
+
+function show_invitacion_crear_curso(){
+  return theme('invitacion_crear_curso');
+}
+/*************************************************************/
+
+/*Cursos sugeridos*/
+function show_cursos_sugeridos(){
+  return theme('cursos_sugeridos');
+}
+
+function show_item_cursos_sugeridos($nid_curso, $pagina, $div_contenedor){
+  $resultadosPorPagina = 4;
+  $resultadosPorLinea = 1;
+
+  if ($pagina == null)
+      $pagina = 1;
+
+  $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+  $lim_fin = $pagina * $resultadosPorPagina;
+
+  $items = consultar_item_cursos_sugeridos_db($nid_curso, $lim_ini, $lim_fin);
+  $itemsProyectos = $items[0]['items'];
+
+  $theme_individual = 'item_cursos_sugeridos';
+
+  mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos,  $theme_individual);
+}
+/********************/

@@ -1,0 +1,528 @@
+<?php
+
+/**
+ * @file
+ * Crea fed-corefront que sirven para agrupar distintos fed-corefront.
+ *
+ * @author Stefan M. Kudwien (http://drupal.org/user/48898)
+ */
+
+/**
+ * Implements hook_help().
+ *
+ * Displays help and module information.
+ *
+ * @param path
+ *   Which path of the site we're using to display help
+ * @param arg
+ *   Array that holds the current path as returned from arg() function
+ */
+
+module_load_include('inc','fedcorefront','inc/back-end');
+module_load_include('inc','fedcorefront','includes/global.copywrite');
+module_load_include('inc','fedcorefront','inc/custom-categorias');
+module_load_include('inc','fedcorefront','inc/custom-cursos-populares');
+//module_load_include('inc','fedcorefront','inc/custom-productos');
+module_load_include('inc','fedcorefront','inc/custom-empresas');
+module_load_include('inc','fedcorefront','inc/custom-comunidad');
+
+function fedcorefront_help($path, $arg) {
+  switch ($path) {
+    case "admin/help#fed-corefront":
+      return '<p>' . t("Prueba de Help =)") . '</p>';
+      break;
+  }
+} 
+
+/**
+ * Implements hook_block_info().
+ */
+function fedcorefront_block_info() {
+  $blocks['fed-corefront'] = array(
+    // The name that will appear in the block list.
+    'info' => t('fed-corefront'),
+    // Default setting.     
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  
+  $blocks['header-login'] = array(
+    // The name that will appear in the block list.
+    'info' => t('header-login'),
+    // Default setting.
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  
+  $blocks['header-logout'] = array(
+    // The name that will appear in the block list.
+    'info' => t('header-logout'),
+    // Default setting.
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );     
+  
+  /*Home*/
+  $blocks['home-busqueda'] = array(
+    'info' => t('HOME - Busqueda Principal'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  $blocks['home-fundaciones'] = array(
+    'info' => t('HOME - Fundaciones'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  ); 
+  $blocks['home-cursos'] = array(
+    'info' => t('HOME - Cursos'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  ); 
+  $blocks['home-tienda'] = array(
+    'info' => t('HOME - Tienda'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  ); 
+  $blocks['home-empresas'] = array(
+    'info' => t('HOME - Empresas'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  ); 
+  $blocks['home-comunidad'] = array(
+    'info' => t('HOME - Comunidad'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  $blocks['home-pagos'] = array(
+    'info' => t('HOME - Formas de Pago'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  ); 
+  /******/
+  /*Carrusel*/
+  $blocks['carrusel-cursos'] = array(
+    'info' => t('Carrusel - Cursos'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  /*$blocks['carrusel-tienda'] = array(
+    'info' => t('Carrusel - Productos'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );*/
+  $blocks['carrusel-empresas'] = array(
+    'info' => t('Carrusel - Cursos'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  $blocks['carrusel-comunidad'] = array(
+    'info' => t('Carrusel - Cursos'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  /**********/
+  $blocks['banner-300x250'] = array(
+    'info' => t('FEDCORE - Banner 300 x 250'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  $blocks['banner-300x100'] = array(
+    'info' => t('FEDCORE - Banner 300 x 100'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  $blocks['banner-728x90'] = array(
+    'info' => t('FEDCORE - Banner 728 x 90'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  
+  $blocks['footer'] = array(
+    // The name that will appear in the block list.
+    'info' => t('footer'),
+    // Default setting.
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  
+  $blocks['helper-colores'] = array(
+    // The name that will appear in the block list.
+    'info' => t('helper para colores'),
+    // Default setting.
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  return $blocks;
+}
+
+function fedcorefront_block_view($delta = ''){
+  if(user_access('access content')){ //good idea to check user perms here
+     
+    switch ($delta) {
+      case 'header-login':
+        $uid = 5;
+        $items = obtener_notificaciones($uid);
+        $block['content'] =  theme('header-login', array('items' => $items[0]));                   
+      break;        
+      case 'header-logout':
+        $block['content'] = theme('header-logout');                   
+      break;  
+      case 'banner-300x250':
+        $items['banner'] = fedcorefront_get_banner('300x250',''); 
+        $block['content'] = theme('banner-300x250', array('items' => $items));                 
+      break; 
+      case 'banner-300x100':   
+        $items['banner'] = fedcorefront_get_banner('300x100','');  
+        $block['content'] = theme('banner-300x100', array('items' => $items));                
+      break; 
+      case 'banner-728x90':
+        $items['banner'] = fedcorefront_get_banner('728x90','');   
+        $block['content'] = theme('banner-728x90', array('items' => $items));                  
+      break;
+      case 'footer':
+        $block['content'] = theme('footer-theme');                  
+      break;                         
+      /*Home*/
+      case 'home-busqueda':
+        $block['content'] = show_home_busqueda($delta);
+      break;
+      case 'home-fundaciones':
+        $block['content'] = show_home_fundaciones($delta);
+      break;
+      case 'home-cursos':
+        $block['content'] = show_home_cursos($delta);
+      break;
+      case 'home-tienda':
+        $block['content'] = show_home_tienda($delta);
+      break;
+      case 'home-empresas':
+        $block['content'] = show_home_empresas($delta);
+      break;
+      case 'home-comunidad':
+        $block['content'] = show_home_comunidad($delta);
+      break;
+      case 'home-pagos':
+        $block['content'] = show_home_pagos($delta);
+      break;
+      /******/
+      /*Carruseles*/
+      case 'carrusel-cursos':
+        $block['content'] = show_carrusel_cursos($delta);
+      break;
+      /*case 'carrusel-tienda':
+        $block['content'] = show_carrusel_productos($delta);
+      break;*/
+      case 'carrusel-empresas':
+        $block['content'] = show_carrusel_empresas($delta);
+      break;
+      case 'carrusel-comunidad':
+        $block['content'] = show_carrusel_comunidad($delta);
+      break;
+      case 'helper-colores':
+        $block['content'] = show_carrusel_comunidad($delta);
+      break;
+      /******/
+    }
+    return $block;     
+  }    
+}   
+
+function fedcorefront_theme($existing,$type,$theme,$path) {
+  $mostrar_btn_categorias = TRUE;
+  return array(
+    'header-login' => array(
+            'variables' => array('curso'=>NULL),
+            'template' => 'templates/header-logged-in'
+    ),
+    'header-logout' => array(
+            'variables' => array('curso'=>NULL),
+            'template' => 'templates/header-logged-out'
+    ),    
+    'ver_rate_stars' => array(
+      'variables' => array('item' => NULL),
+      'template' => 'templates/mostrar-rated',
+    ),     
+     'paginacion' => array(
+            'variables' => array('totalPaginas'=>NULL,'pagina'=>1,'funcionAjax'=>NULL,'parametrosAjax'=>NULL,'contenedorAjax'=>NULL),
+            'template' => 'templates/paginacion'                
+    ),
+    'banner-300x250' => array(
+      'variables' => array('item' => NULL),
+      'template' => 'templates/banner-300x250',
+    ),
+    'banner-300x100' => array(
+      'variables' => array('item' => NULL),
+      'template' => 'templates/banner-300x100',
+    ),
+    'banner-728x90' => array(
+      'variables' => array('item' => NULL),
+      'template' => 'templates/banner-728x90',
+    ),
+     'lista-comentarios' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/comentarios'                
+    ),'elemento-comentario' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/elemento-comentario'                
+    ),'ver-mas' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/ver-mas'                
+    ),
+    /*Busqueda*/
+    'busqueda' => array(
+      'variables' => array('btn_categorias' => $mostrar_btn_categorias),
+      'template' => 'templates/busqueda/busqueda'
+    ),
+    'busqueda_categoria_izq' => array(
+      'variables' => array('item'=>NULL),
+      'template' => 'templates/busqueda/busqueda_categoria_izq'
+    ),
+    /*Home*/
+    'home_busqueda' => array(
+      'variables' => array('item'=>NULL),
+      'template' => 'templates/home/home_busqueda'
+    ),
+    'home_fundaciones' => array(
+      'variables' => array('item'=>NULL),
+      'template' => 'templates/home/home_fundaciones'
+    ),
+    'home_cursos' => array(
+      'variables' => array('item'=>NULL),
+      'template' => 'templates/home/home_cursos'
+    ),
+    'home_tienda' => array(
+      'variables' => array('item'=>NULL),
+      'template' => 'templates/home/home_tienda'
+    ),
+    'home_empresas' => array(
+      'variables' => array('item'=>NULL),
+      'template' => 'templates/home/home_empresas'
+    ),
+    'home_comunidad' => array(
+      'variables' => array('item'=>NULL),
+      'template' => 'templates/home/home_comunidad'
+    ),
+    'home_pagos' => array(
+      'variables' => array('item'=>NULL),
+      'template' => 'templates/home/home_pagos'
+    ),
+    /*****/
+    /*Carruseles*/
+    'carrusel_cursos' => array(
+      'variables' => array('item'=>NULL),
+      'template' => 'templates/carrusel/carrusel_cursos'
+    ),
+    'carrusel_productos' => array(
+      'variables' => array('item'=>NULL),
+      'template' => 'templates/carrusel/carrusel_productos'
+    ),
+    'carrusel_empresas' => array(
+      'variables' => array('item'=>NULL),
+      'template' => 'templates/carrusel/carrusel_empresas'
+    ),
+    'carrusel_comunidad' => array(
+      'variables' => array('item'=>NULL),
+      'template' => 'templates/carrusel/carrusel_comunidad'
+    ),
+    'carrusel_error' => array(
+      'variables' => array('item'=>NULL),
+      'template' => 'templates/carrusel/carrusel_error'
+    ),
+    /*****/
+    'footer-theme' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/footer'                
+    ),
+    'helper-colores' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/helper/colores'                
+    )
+  );
+}
+
+
+
+
+/**
+ * Función para obtener todos los fed-corefront.
+ *
+ * Set beginning and end dates, retrieve posts from database
+ * saved in that time period.
+ *
+ * @return
+ *   A result set of the targeted posts.
+ */
+function fedcorefront_contents($display){
+  //Get today's date.
+  $today = getdate();
+}
+
+function fedcorefront_get_banner($size,$params){
+  $resource = array();
+  switch($size){
+    case '300x250':
+      $resource['img'] = 'http://placehold.it/300x250';
+    break;
+    case '300x100':
+      $resource['img'] = 'http://placehold.it/300x100';
+    break;
+    case '728x90':
+      $resource['img'] = 'http://placehold.it/728x90';
+    break;
+  }
+  return $resource;
+}
+
+function fedcorefront_menu() {
+  $items = array();
+  $items['config/utilidades/colores'] = array(
+    'title' => "Helper para colores",
+    'page callback' => 'helper_colores',
+    'page arguments' => array(),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_menu().
+ */
+/*function fed-corefront_menu() {
+  $items = array();
+  $items['admin/config/content/fed-corefront'] = array(
+    'title' => 'fed-corefront',
+    'description' => 'Configuration para los fed-corefront',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('fed-corefront_form'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['fed-corefront'] = array(
+        'title' => 'fed-corefront',
+        'page callback' => '_fed-corefront_page',
+        'access arguments' => array('access fed-corefront content'),
+        'type' => MENU_CALLBACK, //Will appear in Navigation menu.
+      );
+
+  $items['fed-corefront/nuevo'] = array( //this creates a URL that will call this form at "examples/form-example"
+    'title' => 'Alta de fed-corefront', //page title
+    'description' => 'Creación de un nuevo canal',
+    'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+    'page arguments' => array('canalNuevo_form'), //put the name of the form here
+    'access callback' => TRUE
+  );
+  return $items;
+}
+*/
+
+/*
+Mostrando Templates
+*/
+function show_home_busqueda(){
+  return theme('home_busqueda');
+}
+
+function show_busqueda_categorias(){
+  $items = array();
+  $items = consultar_categorias($nid_categoria);
+  print theme('busqueda_categoria_izq', array('item' => $items));
+}
+
+function show_home_fundaciones(){
+  return theme('home_fundaciones');
+}
+
+function show_home_cursos(){
+  return theme('home_cursos');
+}
+
+function show_home_tienda(){
+  return theme('home_tienda');
+}
+
+function show_home_comunidad(){
+  return theme('home_comunidad');
+}
+
+function show_home_empresas(){
+  return theme('home_empresas');
+}
+
+function show_home_pagos(){
+  return theme('home_pagos');
+}
+
+/*Carrusel*/
+function show_carrusel_cursos($nid_curso){
+  $id_slider = 'slider-cursos-populares';
+  $resultados_por_pantalla = 4;
+  $tpl = 'carrusel_cursos';
+  $titulo = '+ Los mas populares';
+  $tipo = 'cursos';
+  $items = consultar_carrusel_cursos($nid_curso);
+
+  return mostrar_carrusel($resultados_por_pantalla, $items[0], $tpl, $id_slider, $titulo, $tipo);
+}
+
+/*
+function show_carrusel_productos($nid_producto){
+  $id_slider = 'slider-productos-populares';
+  $resultados_por_pantalla = 4;
+  $tpl = 'carrusel_productos';
+  $titulo = '+ Los mas populares';
+  $tipo = 'productos';
+  $items = consultar_carrusel_productos($nid_productos);
+  
+  return mostrar_carrusel($resultados_por_pantalla, $items[0], $tpl, $id_slider, $titulo, $tipo);
+}*/
+
+function show_carrusel_empresas($uid){
+  $id_slider = 'slider-empresas-populares';
+  $resultados_por_pantalla = 4;
+  $tpl = 'carrusel_empresas';
+  $titulo = '+ Los mas populares';
+  $tipo = 'cursos'; //empresas
+  $items = consultar_carrusel_empresas($uid);
+  return mostrar_carrusel($resultados_por_pantalla, $items[0], $tpl, $id_slider, $titulo, $tipo);
+}
+
+function show_carrusel_comunidad($uid){
+  $items = array();
+  $items = consultar_carrusel_comunidad($uid);
+  return theme('carrusel_comunidad', array('item' => $items));
+}
+
+/*
+Creando Formulario
+*/
+/* Home */
+/*** Se comento --- se cambio a un input tradicional
+function fedcorefront_form($form, &$form_state){
+  $form['busqueda']['campo_busqueda_principal'] = array(
+    '#prefix' => '<div>',
+    '#type' => 'textfield',
+    '#maxlength' => 60,
+    '#attributes' =>array('placeholder' => PLACEHOLDER_BUSQUEDA_PRINCIPAL),
+    '#suffix' => '</div>',
+  );
+  return $form;
+}
+
+function  fedcorefront_form_submit($form, &$form_state) {
+  //watchdog('BUSQUEDA', 'SUBMIT', '', WATCHDOG_NOTICE, '', 'search/');
+}
+
+function  fedcorefront_form_validate($form_id, &$form, &$form_state){
+    Global $base_url;
+  //watchdog('BUSQUEDA',  $form_state, '', WATCHDOG_NOTICE, '', 'search/');
+  //debugging($form_state);
+  //print_r($form_state);
+  drupal_goto($base_url.'/busqueda?busqueda='.$form_state['values']);
+}
+*/
+/********/
+
+/* Obtiene el nombre de una subcategoria/ categoria y el de su padre en caso de tenerlo*/
+function get_padre_taxonomia($tid){
+  $padre_arbol = taxonomy_get_parents($tid);
+
+  if ($padre_arbol!=null)
+    $padre = array_pop($padre_arbol);
+  else
+    $padre = null;
+  
+  $taxonomia =  taxonomy_term_load($tid);
+  
+  $obj = (object) array('taxonomia' => $taxonomia, 'padre' => $padre);
+  return $obj;     
+}
+
+
+function helper_colores(){
+  return theme('helper-colores', array('item' => $items));
+}
+
+
+

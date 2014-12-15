@@ -1,0 +1,10 @@
+
+name = Ecommerce for FutureED
+description = Ecommerce Functionality
+core = 7.x
+version = 7.0
+package = future_ed
+
+stylesheets[all][] = css/general.css
+stylesheets[all][] = css/ecommerce.css
+scripts[] = js/ecommerce.js

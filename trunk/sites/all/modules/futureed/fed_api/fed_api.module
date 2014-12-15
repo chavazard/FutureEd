@@ -1,0 +1,594 @@
+<?php
+
+	module_load_include('inc', 'fed_api', 'inc/api');
+	module_load_include('inc', 'fed_api', 'inc/notificaciones');
+	module_load_include('inc', 'fed_api', 'inc/inbox');
+	module_load_include('inc', 'fed_api', 'inc/cursos');
+	// Useful for debugging
+	error_reporting(E_ALL);
+	ini_set('display_errors', 'On');
+
+	function fed_api_init(){
+		drupal_add_js(array('success' => 1),'setting');
+	}
+
+	function fed_api_menu() {
+	  $items['api'] = array(
+	    'title' => 'API',
+	    'page callback' => 'get_api',
+	    'access arguments' => array('access content'),
+	    'type' => MENU_SUGGESTED_ITEM,
+	  );
+
+	  $items['test-api'] = array(
+	    'title' => 'Test API',
+	    'page callback' => 'get_test_api_template',
+	    'access arguments' => array('access content'),
+	    'type' => MENU_SUGGESTED_ITEM,
+	  );
+	  
+	  $items['call-ajax'] = array(
+	    'title' => 'call-ajax',
+	    'page callback' => 'call_ajax',
+	    'access arguments' => array('access content')
+	  );	  
+
+	  return $items;
+
+	}
+
+	function fed_api_theme() {
+	  return array(
+	    'test_api' => array(
+	      'variables' => array('node' => NULL),
+	      'template' => 'templates/test_api'
+	    ),
+	  );
+	}
+
+	function get_test_api_template(){
+		return theme('test_api');
+	}
+
+	function get_api(){
+
+		$results = array(
+			'status' => 'API function does not exist'
+		);
+
+		//print_r ($_GET['f_name']); exit;
+		if (isset($_GET['f_name']) /*&& function_exists($_GET['f_name'])*/){
+
+			switch ($_GET['f_name']){
+				case 'get_courses_nid':
+					$results = $_GET['f_name']($_GET['limit']);
+					break;
+				case 'get_persona':
+					$results = $_GET['f_name']($_GET['limit']);
+					break;
+				case 'get_courses_title':
+					$results = $_GET['f_name']($_GET['limit']);
+					break;
+				case 'get_user_name':
+					$results = $_GET['f_name']($_GET['uid']);
+					break;
+				case 'print_preguntas_frecuentes':
+					$results = $_GET['f_name']($_GET['nid']);
+					break;
+				case 'mostrar_calificaciones_curso':
+					$_POST['f_name']($_POST['nid_curso'], $_POST['pagina'], $_POST['div_contenedor']);					
+					break;
+				case 'print_preguntas_frecuentes':
+					$_GET['f_name']($_GET['nid']);
+					break;
+				//Función para borrar una pregunta frecuente
+				case 'del_pregunta_frecuente':
+					if(!isset($_GET['id']))
+						$_GET['id'] = 0;
+					$results = $_GET['f_name']($_GET['id']);
+					break;
+				case 'get_term_children':
+					$results = $_GET['f_name']($_GET['tid']);					
+					break;
+				//funcion para obtener usuarios y mostrar lista
+				case 'get_profesor_names':
+					$results = $_GET['f_name']($_GET['string']);					
+					break;
+				//Función para obtener preguntas frecuentes de un curso dado un nid
+				case 'get_preguntas_frecuentes':
+					if(!isset($_GET['nid']))
+						$_GET['nid'] = 0;
+					$results = $_GET['f_name']($_GET['nid']);
+					break;
+				//agrega o actualiza una pregunta frecuente
+				case 'add_pregunta_frecuente':
+					if(!isset($_GET['nid']))
+						$_GET['nid'] = 0;
+					$results = $_GET['f_name']($_GET['p'],$_GET['r'],$_GET['nid']);
+					break;
+				//cambia la informacion de una pregunta frecuenta
+				case 'update_pregunta_frecuente':
+					if(!isset($_GET['id']))
+						$_GET['id'] = 0;
+					$results = $_GET['f_name']($_GET['p'],$_GET['r'],$_GET['id']);
+					break;
+				//Función para obtener datos específicos de un curso dado un nid
+				case 'get_datos_especificos':
+					$results = $_GET['f_name']($_GET['nid']);					
+					break;
+				//Función para obtener el precio de un curso dado un nid
+				case 'get_curso_precio':
+					$fields = array('field_curso_costo', 'field_curso_descuento');
+					$results = get_fields_by_nid($_GET['nid'], $fields, 'curso');
+					$results['calc_curso_costo_total'] = get_costo_total($results['field_curso_costo'], $results['field_curso_descuento']);
+					$results['field_curso_costo'] = format_precio($results['field_curso_costo']);
+					break;
+				//Función para obtener datos del header de un curso (nombre, usuario, categoría, subcategoría y tutor) dado un nid
+				case 'get_curso_datos_header':	
+					$fields = array('field_curso_imagen', 'uid', 'field_categoria', 'field_subcategoria', 'field_likes', 'field_curso_calificacion', 'field_curso_numero_votos');
+					$user_fields = array('field_usuario_nombre','field_usuario_apellidos');
+					$results = get_fields_by_nid($_GET['nid'], $fields, 'curso', $user_fields);
+					$results['field_curso_nombre'] = get_property_by_id($_GET['nid'], 'nid', 'title', 'node');
+					$results['calc_curso_creador'] = $results['field_usuario_nombre'].' '.$results['field_usuario_apellidos'];
+					$username = get_property_by_id($results['uid'], 'uid', 'name', 'users');
+					$results['link_curso_creador'] = create_urls('user', $username);
+					$results['link_curso_categoria'] = create_urls('taxonomy', $results['field_categoria']);	//TODO - Definir formato de urls categoría y subcategoría
+					$results['link_curso_subcategoria'] = create_urls('taxonomy', $results['field_subcategoria']);
+					$results['field_categoria'] = get_term_by_tid($results['field_categoria']);
+					$results['field_subcategoria'] = get_term_by_tid($results['field_subcategoria']);					
+					$results['field_curso_imagen'] = create_image_url($results['field_curso_imagen']);
+					$tutores_fields = array('field_usuario_nombre', 'field_usuario_apellidos');
+					$results['array_curso_profesores'] = get_tutores($_GET['nid'], 'curso', $tutores_fields);
+					break;
+				//Función para obtener la fecha de inicio y duración de un curso dado un nid
+				case 'get_curso_fechas':
+					$fields = array('field_curso_fecha');
+					$results = get_fields_by_nid($_GET['nid'], $fields, 'curso');		
+					$results['calc_curso_duracion'] = calculate_weeks($results['field_curso_fecha'], $results['field_curso_fecha_value2']);
+					$results['field_curso_fecha'] = date("d-m-y", $results['field_curso_fecha']); 	//TODO - Definir formato de fecha
+					break;
+				case 'get_cursos_sugeridos':
+					//$fields = array('field_curso_fecha', 'field_curso_horas_totales');
+					$results = $_GET['f_name']($_GET['uid'], $_GET['inicio'], $_GET['limite']);
+					break;
+				//Función para obtener imagen, descripción, objetvio, requerimientos, próximas fechas, temario, bibliografía oficial y bibliografía recomendada de un curso, dado un nid
+				case 'get_curso_informacion':
+					$fields = array('field_curso_imagen', 'field_curso_descripcion', 'field_curso_objetivo', 'field_curso_requerimientos', 'field_curso_proximas_fechas',	//TODO - Formato de próximas fechas
+							'field_curso_temario', 'field_curso_bibliografia_oficial', 'field_curso_bibliografia_re');
+					$results = get_fields_by_nid($_GET['nid'], $fields, 'curso');					
+					break;
+				//Función para obtener modalidad, tutoreo e idioma de un curso dado un nid
+				case 'get_curso_vista_rapida':
+					$fields = array('field_curso_modalidad', 'field_curso_tutoreo', 'field_curso_idioma');
+					$results = get_fields_by_nid($_GET['nid'], $fields, 'curso');					
+					break;
+				//Función para obtener nombre, empresa, foto de perfil y link de tutor(es) dado un nid de un curso
+				case 'get_curso_tutores':
+					$user_fields = array('field_usuario_nombre', 'field_usuario_apellidos', 'field_usuario_empresa', 'picture', 'uid');
+					$results = get_tutores($_GET['nid'], 'curso', $user_fields);
+					break;
+				//Función para obtener nombre, seguidores, seguidos, username y foto de perfil de un usuario dado un uid
+				case 'get_usuario_header':
+					$results = $_GET['f_name']($_GET['uid']);
+					break;
+				//Función para obtener nombre, seguidores, seguidos, username y foto de perfil de una empresa dado un uid
+				case 'get_empresa_header':									
+					$user_fields = array('field_usuario_nombre','field_usuario_apellidos', 'field_usuario_numero_seguidores', 'field_usuario_numero_seguidos','field_usuario_roles','field_usuario_verificado','field_empresa_imagen_portada');
+					$results = get_user_fields($_GET['uid'], $user_fields);					
+					$privacidad = get_privacidad_usuario($_GET['uid'],$actual_uid); 
+					$results['calc_usuario_nombre'] = $results['field_usuario_nombre'].' '.$results['field_usuario_apellidos'];
+					$results['field_usuario_username'] = get_property_by_id($_GET['uid'], 'uid', 'name', 'users');
+					$results['field_usuario_imagen'] = get_user_picture($_GET['uid']);					
+					$results['field_empresa_imagen_portada'] = create_image_url($results['field_empresa_imagen_portada']);
+					//var_dump($privacidad);
+					$results['field_usuario_privacidad_perfil'] = $privacidad['field_usuario_privacidad_perfil'] ;
+					$results['field_usuarios_privacidad_mensaj'] = $privacidad['field_usuario_privacidad_perfil'] ;
+					break;				
+				//Función para obtener la información completa del usuario dado un uid
+				case 'get_usuario_info':					
+					$results = get_usuario_info($_GET['uid']);
+					break;
+				//Función para obtener la información completa de contacto una empresa dado un uid
+				case 'get_empresa_info':					
+					$results = get_empresa_info($_GET['uid']);
+					break;
+				//Función para obtener la información profesional y academica de un usuario
+				case 'get_usuario_prof_info':					
+					$results = get_usuario_prof_info($_GET['uid']);
+					break;
+				//Función para obtener la información nosotros de una empresa
+				case 'get_empresa_acerca':					
+					$results = get_empresa_acerca($_GET['uid']);
+					break;								
+				//Función para obtener la imagen, nombre, categoría, subactegoría(s), descripción, nombre del creador y foto del creador de un canal, dado un nid
+				case 'get_canal_info':
+					$fields = array('field_canal_imagen', 'uid', 'field_categoria', 'field_subcategoria', 'field_canal_descripcion');	
+					$user_fields = array('field_usuario_nombre','field_usuario_apellidos');
+					$results = get_fields_by_nid($_GET['nid'], $fields, 'canal', $user_fields);
+					$results['field_canal_nombre'] = get_property_by_id($_GET['nid'], 'nid', 'title', 'node');
+					$results['calc_creador_nombre'] = $results['field_usuario_nombre'].' '.$results['field_usuario_apellidos'];
+					$username = get_property_by_id($results['uid'], 'uid', 'name', 'users');
+					$results['link_creador_canal'] = create_urls('user', $username);
+					$results['field_creador_imagen'] = get_user_picture($results['uid']);
+					$results['field_canal_imagen'] = create_image_url($results['field_canal_imagen']);
+					$results['link_canal_categoria'] = create_urls('taxonomy', $results['field_categoria']);	//TODO - Definir formato de urls categoría y subcategoría
+					$results['link_canal_subcategoria'] = create_urls('taxonomy', $results['field_subcategoria']);
+					$results['field_categoria'] = get_term_by_tid($results['field_categoria']);
+					$results['field_subcategoria'] = get_term_by_tid($results['field_subcategoria']);
+					
+					break;
+				//Función para obtener nombre, empresa, foto y link de tutor(es) dado un nid de un canal
+				case 'get_canal_tutores':
+					$user_fields = array('field_usuario_nombre', 'field_usuario_apellidos', 'picture');
+					$results = get_tutores($_GET['nid'], 'canal', $user_fields);
+					break;
+				//Función para obtener un listado de cursos de un canal dado su nid
+				case 'get_canal_cursos':
+					$results = get_cursos_busqueda($_GET['string'], $_GET['categoria'], $_GET['subcategoria'], $_GET['modalidad'], $_GET['ordenamiento'],
+								       $_GET['rango_precio_min'], $_GET['rango_precio_max'], $_GET['inicio'], $_GET['limite'],
+								       $_GET['canal_nid']);
+					break;
+				
+				//Función para obtener un listado de cursos resultado de una búsqueda
+				case 'get_cursos_busqueda':
+					//get_cursos_busqueda($string, $categoria, $modalidad, $ordenamiento, $rango_precio_min, $rango_precio_max, $inicio, $limite)
+					$results = get_cursos_busqueda($_GET['string'], $_GET['categoria'], $_GET['subcategoria'], $_GET['modalidad'], $_GET['ordenamiento'],
+								       $_GET['rango_precio_min'], $_GET['rango_precio_max'], $_GET['inicio'], $_GET['limite']);
+					break;
+				
+				//Función para obtener el resumen de cursos que pertenecen a un usuario dado un uid
+				case 'get_usuario_cursos_resumen':
+					$results = get_usuario_lista($_GET['uid'], 'curso', 0, 9);
+					break;
+				//Función para obtener el resumen de canales que pertenecen a un usuario dado un uid	//PENDIENTE de probar
+				case 'get_usuario_canales_resumen':
+					$results = get_usuario_lista($_GET['uid'], 'canal', 0, 9);
+					break;
+				//Función para obtener los cursos que pertenecen a un usuario dado un uid
+				case 'get_usuario_cursos_creados':
+					$results = get_usuario_lista($_GET['uid'], 'curso', $_GET['inicio'], $_GET['limite'], $_GET['ordenamiento']);
+					break;
+				//Función para obtener los canales que pertenecen a un usuario dado un uid	//PENDIENTE de probar
+				case 'get_usuario_canales':
+					$results = get_usuario_lista($_GET['uid'], 'canal');
+					break;
+				case 'get_usuario_canales_admin':
+					$results = array();
+					$results[] = get_canales_admin($_GET['uid'], $_GET['inicio'], $_GET['limite'], false);
+					$results['total_canales'] = get_canales_admin($_GET['uid'], $_GET['inicio'], $_GET['limite'], true);
+					break;
+			//funcion para guardar otros intereses de un usuario
+				case 'insert_interes':
+					$results = $_GET['f_name']($_GET['name'],$_GET['uid']);					
+					break;
+				//funcion para guardar las cuentas de deposito de un usuario
+				case 'insert_cuenta_deposito':
+					$results = $_GET['f_name']($_GET['tipo'],$_GET['alias'],$_GET['banco'],$_GET['titular'],$_GET['cuenta'],$_GET['clabe'],$_GET['paypal'],$_GET['uid']);					
+					break;
+				//funcion para guardar los datos de pago de un usuario
+				case 'insert_datos_pago':
+					$results = $_GET['f_name']($_GET['alias'],$_GET['tarjeta'],$_GET['tipo'],$_GET['nombre'],$_GET['fecha'],$_GET['codigo'],$_GET['uid']);					
+					break;
+				case 'get_todas_categorias':
+					$results = get_all_taxonomy_tree($_GET['vid']);
+					break;
+				case 'search_nodes_by_string':
+					$results = $_GET['f_name']($_GET['uid']);  
+					break;
+				//Obtiene canales creados por el usuario
+				case 'get_canales_by_user':
+					$results = $_GET['f_name']($_GET['uid']);
+					break;
+				//Obtiene canales donde el usuario es administrador
+				case 'get_canales_by_admin':
+					$results = $_GET['f_name']($_GET['uid']);
+					break;
+				case 'insert_notificacion':
+					$results = $_GET['f_name']($_GET['uid'], $_GET['tipo'], $_GET['url'], $_GET['nid'], $_GET['entity_type'], $_GET['uid_externo']);
+					break;
+				case 'get_notificaciones':
+					$results = $_GET['f_name']($_GET['uid'], $_GET['limit']);
+					break;
+				case 'get_count_notificaciones':
+					$results = $_GET['f_name']($_GET['uid']);
+					break;
+				//funcion para obtener las direcciones de un usuario
+				case 'get_direcciones':
+					$results = $_GET['f_name']($_GET['uid']);
+					break;
+				//funcion para obtener las tarjetas de un usuario
+				case 'get_tarjeta':
+					$results = $_GET['f_name']($_GET['uid']);
+					break;
+				//funcion para obtener los datos de facturacion de un usuario
+				case 'get_persona':
+					$results = $_GET['f_name']($_GET['uid']);
+					break;
+				//funcion para obtener las cuentas de un usuario
+				case 'get_cuenta':
+					$results = $_GET['f_name']($_GET['uid']);
+					break;
+				//funcion para obtener las cuentas de paypal de un usuario
+				case 'get_paypal':
+					$results = $_GET['f_name']($_GET['uid']);
+					break;
+				//funcion para guardar direcciones
+				case 'insert_direcciones':
+					$results = $_GET['f_name']($_GET['uid'],$_GET['calle'],$_GET['nexterior'],$_GET['ninterior'],$_GET['colonia'],$_GET['municipio'],$_GET['estado'],$_GET['pais'],$_GET['cp']);
+					break;
+				//funcion para obtener las tarjetas de un usuario
+				case 'get_tarjeta':
+					$results = $_GET['f_name']($_GET['uid']);
+					break;
+				//funcion para obtener los datos de facturacion de un usuario
+				case 'get_persona':
+					$results = $_GET['f_name']($_GET['uid']);
+					break;
+				//funcion para obtener las cuentas de un usuario
+				case 'get_cuenta':
+					$results = $_GET['f_name']($_GET['uid']);
+					break;
+				//funcion para obtener las cuentas de paypal de un usuario
+				case 'get_paypal':
+					$results = $_GET['f_name']($_GET['uid']);
+					break;
+				//funcion para guardar direcciones
+				case 'insert_direcciones':
+					$results = $_GET['f_name']($_GET['uid'],$_GET['calle'],$_GET['nexterior'],$_GET['ninterior'],$_GET['colonia'],$_GET['municipio'],$_GET['estado'],$_GET['pais'],$_GET['cp']);
+					break;											
+				//funcion para guardar tarjetas
+				case 'insert_tarjeta':
+					$results = $_GET['f_name']($_GET['uid'],$_GET['alias'],$_GET['numero'],$_GET['tipo'],$_GET['nombre'],$_GET['vencimiento'],$_GET['codigo']);
+					break;
+				//funcion para guardar datos de facturacion usuario
+				case 'insert_persona':
+					$results = $_GET['f_name']($_GET['uid'],$_GET['tipo'],$_GET['rsocial'],$_GET['rfc'],$_GET['calle'],$_GET['nexterior'],$_GET['ninterior'],$_GET['colonia'],$_GET['municipio'],$_GET['pais'],$_GET['cp'],$_GET['estado'],$_GET['ciudad'],$_GET['email'],$_GET['telefono']);
+					break;			
+				//funcion para guardar cuentas de un usuario
+				case 'insert_cuenta':
+					$results = $_GET['f_name']($_GET['uid'],$_GET['alias'],$_GET['tipo'],$_GET['banco'],$_GET['cuenta'],$_GET['titular'],$_GET['clabe']);
+					break;
+				case 'insert_inbox':
+					$results = $_GET['f_name']($_GET['id_inbox'], $_GET['uid'], $_GET['msg'], $_GET['users'], $_GET['url']);
+					break;
+				case 'get_mensajes_inbox':
+					$results = $_GET['f_name']($_GET['id_inbox'], $_GET['uid']);
+					break;
+				case 'get_all_inbox_by_user':
+					$results = $_GET['f_name']($_GET['uid']);
+					break;
+				//funcion para obtener la informacion profesional de un usuario
+				case 'get_informacion_profesional':
+					$results = $_GET['f_name']($_GET['uid']);
+					break;
+				//funcion para obtener la informacion academica de un usuario
+				case 'get_informacion_academica':  
+					$results = $_GET['f_name']($_GET['uid']);
+					break;
+				//funcion para guardar datos profesionales de un usuario
+				case 'insert_informacion_profesional':
+					$results = $_GET['f_name']($_GET['uid'],$_GET['empresa'],$_GET['puesto'],$_GET['eactual'],$_GET['fechaini'],$_GET['fechafin']);
+					break;
+				//funcion para guardar datos academicos de un usuario
+				case 'insert_informacion_academica':
+					$results = $_GET['f_name']($_GET['uid'],$_GET['escuela'],$_GET['titulo'],$_GET['tipo'],$_GET['cursando']);
+					break;
+				//funcion para guardar la cuenta de paypal de un usuario
+				case 'insert_paypal':
+					$results = $_GET['f_name']($_GET['uid'],$_GET['paypal']);
+					break;
+				//funcion para 
+				case 'delete_node':
+					$results = $_GET['f_name']($_GET['nid']);
+					break;   
+
+			}
+			$json = json_encode($results, JSON_UNESCAPED_SLASHES);
+			print_r($json);
+
+		}
+
+		//print drupal_json_output($results);
+
+	}
+	
+	function call_ajax(){		
+		if (isset($_POST['f_name']) && function_exists($_POST['f_name'])){ 
+			switch ($_POST['f_name']){
+				case 'print_preguntas_frecuentes':
+					$_POST['f_name']($_POST['nid_curso']);					
+					break;
+				case 'print_informacion_curso':
+					$_POST['f_name']($_POST['nid_curso']);					
+					break;
+				case 'mostrar_proyectos_curso':
+					$_POST['f_name']($_POST['nid_curso'], $_POST['pagina'], $_POST['div_contenedor']);					
+					break;
+				case 'mostrar_resumen_calificaciones':
+					$_POST['f_name']($_POST['nid_curso']);	
+					break;				
+				/*----------Busquedas-----------*/
+				/*Resumen*/
+				case 'show_busqueda_cursos':
+					$_POST['f_name']($_POST['string_busqueda']);	
+					break;
+				case 'show_busqueda_empresas':
+					$_POST['f_name']($_POST['string_busqueda']);	
+					break;
+				case 'show_busqueda_usuarios':
+					$_POST['f_name']($_POST['string_busqueda']);	
+					break;
+				/*Listado*/
+				case 'show_busqueda_listado_cursos':
+					$_POST['f_name']($_POST['string_busqueda'], $_POST['pagina'], $_POST['modalidad'], $_POST['categoria'], $_POST['div_contenedor']);	
+					break;
+				case 'show_busqueda_listado_empresas':
+					$_POST['f_name']($_POST['string_busqueda'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+				case 'show_busqueda_listado_usuarios':
+					$_POST['f_name']($_POST['string_busqueda'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+				case 'show_busqueda_listado_canales':
+					$_POST['f_name']($_POST['string_busqueda'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+				case 'show_busqueda_listado_grupos':
+					$_POST['f_name']($_POST['string_busqueda'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+				/*----------Perfil-----------*/
+				/*Lista de seguimiento*/
+				case 'show_siguiendo':
+					$_POST['f_name']($_POST['uid'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+				case 'show_seguidores':
+					$_POST['f_name']($_POST['uid'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+				/*Cursos*/
+				/*Modal*/
+				case 'show_cursos_calificar':
+					$_POST['f_name']($_POST['nid'], $_POST['pagina'], $_POST['div_contenedor']);
+					break;
+				/*Cursos Comprados*/
+				case 'show_cursos_comprados_actuales':
+					$_POST['f_name']($_POST['nid_curso'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+				case 'show_cursos_comprados_pasados':
+					$_POST['f_name']($_POST['nid_curso'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+				case 'show_cursos_comprados_tomar':
+					$_POST['f_name']($_POST['nid_curso'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+				/*Cursos Creados*/
+				case 'show_cursos_creados_todos':
+					$_POST['f_name']($_POST['nid_curso'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+				case 'show_cursos_creados_actuales':
+					$_POST['f_name']($_POST['nid_curso'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+				case 'show_cursos_creados_pasados':
+					$_POST['f_name']($_POST['nid_curso'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+				/*Canales*/
+				case 'show_mis_canales':
+					$_POST['f_name']($_POST['nid_curso'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+				case 'show_canales_administrar':
+					$_POST['f_name']($_POST['nid_curso'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+				/*Crear Canal - Tutores*/
+				case 'show_crear_canal':
+					$_POST['f_name']($_POST['nid_canal'], $_POST['pagina'], $_POST['div_contenedor']);
+					break;
+				case 'show_crear_canal_tutores':
+					$_POST['f_name']($_POST['uid_tutor'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+				case 'show_crear_canal_cursos':
+					$_POST['f_name']($_POST['uid_curso'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+				case 'show_crear_canal_administradores':
+					$_POST['f_name']($_POST['uid_administrador'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+				/*Usuarios Sugeridos*/
+				case 'show_item_usuarios_sugeridos':
+					$_POST['f_name']($_POST['uid'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+				/*--------- Cursos--------*/
+				/*Ver cursos*/
+				case 'print_comentarios_curso':
+					$_POST['f_name']($_POST['nid_curso'],$_POST['ultimo_nid'],$_POST['div_contenedor']);	
+					break;
+				case 'print_lista_megusta_curso':
+					$_POST['f_name']($_POST['nid_curso'],$_POST['ultimo_nid'],$_POST['div_contenedor']);	
+					break;
+				case 'mostrar_calificaciones_curso':
+					$_POST['f_name']($_POST['nid_curso'], $_POST['pagina'], $_POST['div_contenedor']);					
+					break;
+				case 'mostrar_grid_cursos_populares':					
+					$_POST['f_name']($_POST['pagina'], $_POST['div_contenedor'], $_POST['resumen']);					
+					break;
+				case 'mostrar_grid_cursos_categoria':
+					$_POST['f_name']($_POST['pagina'], $_POST['div_contenedor']
+							 , $_POST['categoria']
+							 , $_POST['modalidad']
+							 //, $_POST['tipo']
+							 , $_POST['ordenamiento']
+							 , $_POST['calificacion']
+							 , $_POST['rango_precio_min']
+							 , $_POST['rango_precio_max']);					
+					break;				
+				/*------Función megusta ---------*/
+				case 'toggle_me_gusta':
+					$_POST['f_name']($_POST['nid'],$_POST['uid'],$_POST['me_gusta']);	
+					break;				
+				/*----------Canales-----------*/
+				/*Ver Canal*/
+				case 'show_ver_canal_cursos':
+					$_POST['f_name']($_POST['nid_curso'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+				case 'show_ver_canal_equipo':
+					$_POST['f_name']($_POST['uid'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+				/*Cursos Sugeridos*/
+				case 'show_item_cursos_sugeridos':
+					$_POST['f_name']($_POST['nid_curso'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+				/*----------Grupos-----------*/
+				/*Grupos*/
+				case 'show_mis_grupos':
+					$_POST['f_name']($_POST['uid'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+				case 'show_grupos_administrados':
+					$_POST['f_name']($_POST['uid'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+				case 'show_grupo_detalle':
+					$_POST['f_name']($_POST['idGrupo'], $_POST['trigger'], $_POST['div_contenedor']);	
+					break;
+				/**/
+				/*----------Home-----------*/
+				/*Busqueda - Categorias*/
+				case 'show_busqueda_categorias':
+					$_POST['f_name']();	
+					break;
+				/*Crear Cursos*/	
+				case 'agregar_nueva_pregunta':
+					$_POST['f_name']($_POST['pregunta'], $_POST['respuesta'], $_POST['nid']);	
+					break;
+
+				/*inscripción de usuario a un grupo*/	
+				case 'inscribir_usuario_grupo':
+					//print_r("expression");
+					$result = $_POST['f_name']($_POST['usuario'], $_POST['grupo']);	
+					print_r($result);
+					return $result;
+					break;
+				/*----------Creacion Curso-----------*/
+				/*Seleccionar Canal - Mis Canales*/
+				case 'show_seleccionar_mis_canales':
+					$_POST['f_name']($_POST['nid_canal'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+				/*Seleccionar Canal - Canales Administrar*/
+				case 'show_seleccionar_canales_administrar':
+					$_POST['f_name']($_POST['nid_canal'], $_POST['pagina'], $_POST['div_contenedor']);	
+					break;
+
+				//Historial de ventas
+				case 'print_historial_ventas_actuales':
+					$_POST['f_name']($_POST['nid_usuario']);
+					break;
+				case 'print_historial_ventas_mes_pasado':
+					$_POST['f_name']($_POST['nid_usuario']);
+					break;
+				case 'print_historial_ventas_facturadas':
+					$_POST['f_name']($_POST['nid_usuario']);
+					break;
+
+				//Historial de compras
+				case 'print_historial_compras':
+					$_POST['f_name']($_POST['nid_usuario']);
+					break;
+					
+			}
+
+		}else{//Mandar llamar función de error
+			//return funcion_error(); 
+		}
+	}

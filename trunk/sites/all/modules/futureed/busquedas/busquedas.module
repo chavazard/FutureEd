@@ -1,0 +1,798 @@
+<?php
+
+module_load_include('inc','fedcorefront','inc/custom');
+module_load_include('inc','busquedas','includes/custom-busquedas');
+module_load_include('inc','fedcorefront','includes/global.copywrite');
+
+/*
+Templates
+*/
+function busquedas_theme($existing,$type,$theme,$path) {   
+  return array(
+    'busqueda_contador_resultados' => array(
+      'template' => 'templates/busqueda_contador_resultados',
+      'variables' => array('items' => NULL,),
+    ),
+    'busqueda_opciones' => array(
+      'template' => 'templates/busqueda_opciones',
+      'variables' => array('items' => NULL,),
+    ),
+
+    /*Filtros*/
+    'busqueda_filtros_cursos' => array(
+      'template' => 'templates/filtros/busqueda_filtros_cursos',
+      'variables' => array('items' => NULL,),
+    ),
+    'busqueda_filtros_empresas' => array(
+      'template' => 'templates/filtros/busqueda_filtros_empresas',
+      'variables' => array('items' => NULL,),
+    ),
+    'busqueda_filtros_usuarios' => array(
+      'template' => 'templates/filtros/busqueda_filtros_usuarios',
+      'variables' => array('items' => NULL,),
+    ),
+    'busqueda_filtros_canales' => array(
+      'template' => 'templates/filtros/busqueda_filtros_canales',
+      'variables' => array('items' => NULL,),
+    ),
+    'busqueda_filtros_grupos' => array(
+      'template' => 'templates/filtros/busqueda_filtros_grupos',
+      'variables' => array('items' => NULL,),
+    ),    
+
+    /*Items*/
+    'busqueda_cursos' => array(
+      'template' => 'templates/items/busqueda_cursos',
+      'variables' => array('items' => NULL,),
+    ),
+    'busqueda_empresas' => array(
+      'template' => 'templates/items/busqueda_empresas',
+      'variables' => array('items' => NULL,),
+    ),
+    'busqueda_usuarios' => array(
+      'template' => 'templates/items/busqueda_usuarios',
+      'variables' => array('items' => NULL,),
+    ),
+    'busqueda_canales' => array(
+      'template' => 'templates/items/busqueda_canales',
+      'variables' => array('items' => NULL,),
+    ),
+    'busqueda_grupos' => array(
+      'template' => 'templates/items/busqueda_grupos',
+      'variables' => array('items' => NULL,),
+    ),
+
+    /*Templates Contenedores - Busquedas Resultados Generales*/
+    'busqueda_resultado_general_cursos' => array(
+      'template' => 'templates/busquedas-resultados-generales/busqueda_resultado_general_cursos',
+      'variables' => array('items' => NULL,),
+    ),
+    'busqueda_resultado_general_empresas' => array(
+      'template' => 'templates/busquedas-resultados-generales/busqueda_resultado_general_empresas',
+      'variables' => array('items' => NULL,),
+    ),
+    'busqueda_resultado_general_usuarios' => array(
+      'template' => 'templates/busquedas-resultados-generales/busqueda_resultado_general_usuarios',
+      'variables' => array('items' => NULL,),
+    ),
+
+    /*Templates Contenedores - Busquedas Generales*/
+    'busqueda_general_cursos' => array(
+      'template' => 'templates/busquedas-generales/busqueda_general_cursos',
+      'variables' => array('items' => NULL,),
+    ),
+    'busqueda_general_empresas' => array(
+      'template' => 'templates/busquedas-generales/busqueda_general_empresas',
+      'variables' => array('items' => NULL,),
+    ),
+    'busqueda_general_usuarios' => array(
+      'template' => 'templates/busquedas-generales/busqueda_general_usuarios',
+      'variables' => array('items' => NULL,),
+    ),
+    'busqueda_general_canales' => array(
+      'template' => 'templates/busquedas-generales/busqueda_general_canales',
+      'variables' => array('items' => NULL,),
+    ),
+    'busqueda_general_grupos' => array(
+      'template' => 'templates/busquedas-generales/busqueda_general_grupos',
+      'variables' => array('items' => NULL,),
+    ),
+  ); 
+}
+
+/*
+Bloques
+*/
+function busquedas_block_info() {
+  $blocks['contador_resultados'] = array(
+    'info' => t('Busqueda - Contador de Resultados'), 
+    'cache' => DRUPAL_NO_CACHE, 
+  );
+  $blocks['opciones'] = array(
+    'info' => t('Busqueda - Opciones'), 
+    'cache' => DRUPAL_NO_CACHE, 
+  );
+
+  /*Filtros*/
+  $blocks['filtros_cursos'] = array(
+    'info' => t('Filtros para Cursos'), 
+    'cache' => DRUPAL_NO_CACHE, 
+  );
+  $blocks['filtros_empresas'] = array(
+    'info' => t('Filtros para Empresas'), 
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  $blocks['filtros_usuarios'] = array(
+    'info' => t('Filtros para Usuarios'), 
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  $blocks['filtros_canales'] = array(
+    'info' => t('Filtros para Canales'), 
+    'cache' => DRUPAL_NO_CACHE, 
+  );
+  $blocks['filtros_grupos'] = array(
+    'info' => t('Filtros para Grupos'), 
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  /*Templates Contenedores - Busquedas Resultados Generales*/
+  $blocks['bloque-resultado-general-cursos'] = array(
+    'info' => t('Bloque - Busqueda Resultado General de Cursos'), 
+    'cache' => DRUPAL_NO_CACHE, 
+  );
+  $blocks['bloque-resultado-general-empresa'] = array(
+    'info' => t('Bloque - Busqueda Resultado General de Empresas'), 
+    'cache' => DRUPAL_NO_CACHE, 
+  );
+  $blocks['bloque-resultado-general-usuario'] = array(
+    'info' => t('Bloque - Busqueda Resultado General de Usuarios'), 
+    'cache' => DRUPAL_NO_CACHE, 
+  );
+
+  /*Templates Contenedores - Busquedas Generales*/
+  $blocks['bloque-busqueda-general-cursos'] = array(
+    'info' => t('Bloque - Busqueda General de Cursos'), 
+    'cache' => DRUPAL_NO_CACHE, 
+  );
+  $blocks['bloque-busqueda-general-empresas'] = array(
+    'info' => t('Bloque - Busqueda General de Empresas'), 
+    'cache' => DRUPAL_NO_CACHE, 
+  );
+  $blocks['bloque-busqueda-general-usuarios'] = array(
+    'info' => t('Bloque - Busqueda General de Usuarios'), 
+    'cache' => DRUPAL_NO_CACHE, 
+  );
+  $blocks['bloque-busqueda-general-canales'] = array(
+    'info' => t('Bloque - Busqueda General de Canales'), 
+    'cache' => DRUPAL_NO_CACHE, 
+  );
+  $blocks['bloque-busqueda-general-grupos'] = array(
+    'info' => t('Bloque - Busqueda General de Grupos'), 
+    'cache' => DRUPAL_NO_CACHE, 
+  );
+  return $blocks;
+}
+
+/*
+Mostrando Bloques
+*/
+function busquedas_block_view($delta = ''){
+  switch ($delta) {
+    case 'contador_resultados':
+      $block['content'] = show_contador_resultados($delta);
+      return $block;
+      break;
+    case 'opciones':
+      $block['content'] = show_opciones($delta);
+      return $block;
+      break;
+
+    /*Filtros*/
+    case 'filtros_cursos':
+      $block['content'] = show_filtros_cursos($delta);
+      return $block;
+      break;
+    case 'filtros_empresas':
+      $block['content'] = show_filtros_empresas($delta);
+      return $block;
+      break;
+    case 'filtros_usuarios':
+      $block['content'] = show_filtros_usuarios($delta);
+      return $block;
+      break;
+    case 'filtros_canales':
+      $block['content'] = show_filtros_canales($delta);
+      return $block;
+      break;
+    case 'filtros_grupos':
+      $block['content'] = show_filtros_grupos($delta);
+      return $block;
+      break;
+
+    /*Templates Contenedores - Busquedas Resultados Generales*/
+    case 'bloque-resultado-general-cursos':
+      $block['content'] = show_resultado_general_cursos($delta);
+      return $block;
+      break;
+    case 'bloque-resultado-general-empresa':
+      $block['content'] = show_resultado_general_empresa($delta);
+      return $block;
+      break;
+    case 'bloque-resultado-general-usuario':
+      $block['content'] = show_resultado_general_usuario($delta);
+      return $block;
+      break;
+
+    /*Templates Contenedores - Busquedas Generales*/
+    case 'bloque-busqueda-general-cursos':
+      $block['content'] = show_busqueda_general_cursos($delta);
+      return $block;
+      break;
+    case 'bloque-busqueda-general-empresas':
+      $block['content'] = show_busqueda_general_empresas($delta);
+      return $block;
+      break;
+    case 'bloque-busqueda-general-usuarios':
+      $block['content'] = show_busqueda_general_usuarios($delta);
+      return $block;
+      break;
+    case 'bloque-busqueda-general-canales':
+      $block['content'] = show_busqueda_general_canales($delta);
+      return $block;
+      break;
+    case 'bloque-busqueda-general-grupos':
+      $block['content'] = show_busqueda_general_grupos($delta);
+      return $block;
+      break;
+  }
+}
+
+/*
+Paths
+*/
+function busquedas_menu(){
+  /*Busqueda*/
+  $items['busqueda'] = array(
+    'page callback' => 'get_busqueda',
+    'access arguments' => array('access_content'),
+  );
+  $items['busqueda/%'] = array(
+    'page callback' => 'get_busqueda_2',
+    'access arguments' => array('access_content'),
+    'page arguments' => array(1),
+  );
+  return $items;
+}
+
+/*
+Menu - Funciones Dummy
+*/
+function get_busqueda(){
+  return "";
+}
+
+function get_busqueda_2($path){
+  switch($path){
+    case 'cursos':
+      $block = module_invoke('busquedas', 'bloque-busqueda-general-cursos');
+      print render($block['content']);
+    break;
+    case 'empresas':
+      $block = module_invoke('busquedas', 'bloque-busqueda-general-empresas');
+      print render($block['content']);
+    break;
+    case 'usuarios':
+      $block = module_invoke('busquedas', 'bloque-busqueda-general-usuarios');
+      print render($block['content']);
+    break;
+    case 'canales':
+      $block = module_invoke('busquedas', 'bloque-busqueda-general-canales');
+      print render($block['content']);
+    break;
+    case 'grupos':
+      $block = module_invoke('busquedas', 'bloque-busqueda-general-grupos');
+      print render($block['content']);
+    break;
+    default:
+      $dest = drupal_get_destination();
+      drupal_goto('busqueda', $dest);
+    break;
+  }
+  return "";
+}
+
+/*
+Funciones
+*/
+function show_contador_resultados(){
+  return theme('busqueda_contador_resultados');
+}
+
+/*---Opciones---*/
+function show_opciones(){
+  return theme('busqueda_opciones');
+}
+
+/*--------------------Filtros--------------------*/
+function show_filtros_cursos(){
+  return theme('busqueda_filtros_cursos');
+}
+
+function show_filtros_empresas(){
+  return theme('busqueda_filtros_empresas');
+}
+
+function show_filtros_usuarios(){
+  return theme('busqueda_filtros_usuarios');
+}
+
+function show_filtros_canales(){
+  return theme('busqueda_filtros_canales'); 
+}
+
+function show_filtros_grupos(){
+  return theme('busqueda_filtros_grupos');
+}
+
+/*--------------------Templates Contenedores - Busquedas Resultados Generales--------------------*/  
+function show_resultado_general_cursos(){
+  return theme('busqueda_resultado_general_cursos');
+}
+
+function show_resultado_general_empresa(){
+  return theme('busqueda_resultado_general_empresas');
+}
+
+function show_resultado_general_usuario(){
+  return theme('busqueda_resultado_general_usuarios');
+}
+
+/*--------------------Items - Resultados Generales--------------------*/
+function show_busqueda_cursos($string_busqueda){
+  $resultadosPorPagina = 4;
+  $resultadosPorLinea = 1;
+
+  if ($pagina == null)
+      $pagina = 1;
+
+  $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+  $lim_fin = $pagina * $resultadosPorPagina;
+
+  $items = consultar_busqueda_generales_cursos_db($arrFiltros[0], $string_busqueda, 1, 4);
+  $itemsProyectos = $items[0]['items'];
+
+  $theme_individual = 'busqueda_cursos';
+
+  mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos,  $theme_individual);
+}
+
+function show_busqueda_empresas($string_busqueda){
+  $resultadosPorPagina = 4;
+  $resultadosPorLinea = 1;
+
+  if ($pagina == null)
+      $pagina = 1;
+
+  $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+  $lim_fin = $pagina * $resultadosPorPagina;
+
+  $items = consultar_busqueda_generales_empresas_db($string_busqueda, 1, 4);
+  $itemsProyectos = $items[0]['items'];
+
+  $theme_individual = 'busqueda_empresas';
+
+  mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos,  $theme_individual);
+}
+
+function show_busqueda_usuarios($string_busqueda){
+  $resultadosPorPagina = 4;
+  $resultadosPorLinea = 1;
+
+  if ($pagina == null)
+      $pagina = 1;
+
+  $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+  $lim_fin = $pagina * $resultadosPorPagina;
+
+  $items = consultar_busqueda_generales_usuarios_db($string_busqueda, 1, 4);
+  $itemsProyectos = $items[0]['items'];
+
+  $theme_individual = 'busqueda_usuarios';
+
+  mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos,  $theme_individual);
+}
+
+
+
+/*------------------------Templates Contenedores - Busquedas Generales------------------------*/
+function show_busqueda_general_cursos(){
+  return theme('busqueda_general_cursos');
+}
+
+function show_busqueda_general_empresas(){
+  return theme('busqueda_general_empresas');
+}
+
+function show_busqueda_general_usuarios(){
+  return theme('busqueda_general_usuarios');
+}
+
+function show_busqueda_general_canales(){
+  return theme('busqueda_general_canales');
+}
+
+function show_busqueda_general_grupos(){
+  return theme('busqueda_general_grupos');
+}
+
+/*--------------------Items - Busquedas Generales--------------------*/
+
+function show_busqueda_listado_cursos($string_busqueda, $pagina, $modalidad, $categoria, $div_contenedor){
+  var_dump($string_busqueda);
+  $resultadosPorPagina = 5;
+  $resultadosPorLinea = 1;
+
+  if ($pagina == null)
+      $pagina = 1;
+
+  //Filtros
+  $arrFiltros = array();
+  array_push($arrFiltros,
+    array(
+      'modalidad' => $modalidad,  
+      'categoria' => $categoria
+    ));
+  var_dump($arrFiltros);
+  
+  $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+  $lim_fin = $pagina * $resultadosPorPagina;
+
+  $items = consultar_busqueda_generales_cursos_db($arrFiltros[0], $string_busqueda, $lim_ini, $lim_fin);
+  $itemsProyectos = $items[0]['items'];
+
+  $theme_individual = 'busqueda_cursos';
+
+  mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos,  $theme_individual);
+
+  //Paginación
+  $f_name = 'show_busqueda_listado_cursos'; 
+  $parametros = "string_busqueda: \'".$string_busqueda."\'";
+  $tema_paginacion = 'paginacion';
+    
+  $totalResultados = $items[0]['totalResultados']; 
+
+  mostrar_paginacion($resultadosPorPagina,$itemsProyectos,$totalResultados,$f_name,$parametros,$div_contenedor,$tema_paginacion, $pagina);
+}
+
+function show_busqueda_listado_empresas($string_busqueda, $pagina, $div_contenedor){
+  $resultadosPorPagina = 5;
+  $resultadosPorLinea = 1;
+
+  if ($pagina == null)
+      $pagina = 1;
+
+  $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+  $lim_fin = $pagina * $resultadosPorPagina;
+
+  $items = consultar_busqueda_generales_empresas_db($string_busqueda, $lim_ini, $lim_fin);
+  $itemsProyectos = $items[0]['items'];
+
+  $theme_individual = 'busqueda_empresas';
+
+  mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos,  $theme_individual);
+
+  //Paginación
+  $f_name = 'show_busqueda_listado_empresas'; 
+  $parametros = "string_busqueda: \'".$string_busqueda."\'";
+  $tema_paginacion = 'paginacion';
+    
+  $totalResultados = $items[0]['totalResultados']; 
+
+  mostrar_paginacion($resultadosPorPagina,$itemsProyectos,$totalResultados,$f_name,$parametros,$div_contenedor,$tema_paginacion, $pagina);
+}
+
+function show_busqueda_listado_usuarios($string_busqueda, $pagina, $div_contenedor){
+  $resultadosPorPagina = 5;
+  $resultadosPorLinea = 1;
+
+  if ($pagina == null)
+      $pagina = 1;
+
+  $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+  $lim_fin = $pagina * $resultadosPorPagina;
+
+  $items = consultar_busqueda_generales_usuarios_db($string_busqueda, $lim_ini, $lim_fin);
+  $itemsProyectos = $items[0]['items'];
+
+  $theme_individual = 'busqueda_usuarios';
+
+  mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos,  $theme_individual);
+
+  //Paginación
+  $f_name = 'show_busqueda_listado_usuarios'; 
+  $parametros = "string_busqueda: \'".$string_busqueda."\'";
+  $tema_paginacion = 'paginacion';
+    
+  $totalResultados = $items[0]['totalResultados']; 
+
+  mostrar_paginacion($resultadosPorPagina,$itemsProyectos,$totalResultados,$f_name,$parametros,$div_contenedor,$tema_paginacion, $pagina);
+}
+
+function show_busqueda_listado_canales($string_busqueda, $pagina, $div_contenedor){
+  $resultadosPorPagina = 5;
+  $resultadosPorLinea = 1;
+
+  if ($pagina == null)
+      $pagina = 1;
+
+  $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+  $lim_fin = $pagina * $resultadosPorPagina;
+
+  $items = consultar_busqueda_generales_canales_db($string_busqueda, $lim_ini, $lim_fin);
+  $itemsProyectos = $items[0]['items'];
+
+  $theme_individual = 'busqueda_canales';
+
+  mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos,  $theme_individual);
+
+  //Paginación
+  $f_name = 'show_busqueda_listado_canales'; 
+  $parametros = "string_busqueda: \'".$string_busqueda."\'";
+  $tema_paginacion = 'paginacion';
+    
+  $totalResultados = $items[0]['totalResultados']; 
+
+  mostrar_paginacion($resultadosPorPagina,$itemsProyectos,$totalResultados,$f_name,$parametros,$div_contenedor,$tema_paginacion, $pagina);
+}
+
+function show_busqueda_listado_grupos($string_busqueda, $pagina, $div_contenedor){
+  $resultadosPorPagina = 5;
+  $resultadosPorLinea = 1;
+
+  if ($pagina == null)
+      $pagina = 1;
+
+  $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+  $lim_fin = $pagina * $resultadosPorPagina;
+
+  $items = consultar_busqueda_generales_grupos_db($string_busqueda, $lim_ini, $lim_fin);
+  $itemsProyectos = $items[0]['items'];
+
+  $theme_individual = 'busqueda_grupos';
+
+  mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos,  $theme_individual);
+
+  //Paginación
+  $f_name = 'show_busqueda_listado_grupos'; 
+  $parametros = "string_busqueda: \'".$string_busqueda."\'";
+  $tema_paginacion = 'paginacion';
+    
+  $totalResultados = $items[0]['totalResultados']; 
+
+  mostrar_paginacion($resultadosPorPagina,$itemsProyectos,$totalResultados,$f_name,$parametros,$div_contenedor,$tema_paginacion, $pagina);
+}
+
+/*
+Creando Formulario
+*/
+
+/*Ordenar*/
+/*Select - Ordenar Cursos*/
+function ordenar_cursos_form($form, &$form_state){
+  $form['ordenar_cusos'] = array(
+    '#prefix' => '<div class="">',
+    '#type' => 'select',
+    '#options' => array(
+      0 => ORDENAR_POR,
+      1 => "",
+      2 => "",
+      3 => "",
+      ),
+    '#suffix' => '</div>',
+  );
+  return $form;
+}
+
+/*Select - Ordenar Empresas*/
+function ordenar_empresas_form($form, &$form_state){
+  $form['ordenar_empresas'] = array(
+    '#prefix' => '<div class="">',
+    '#type' => 'select',
+    '#options' => array(
+      0 => ORDENAR_POR,
+      1 => "",
+      2 => "",
+      3 => "",
+      ),
+    '#suffix' => '</div>',
+  );
+  return $form;
+}
+
+/*Select - Ordenar Usuarios*/
+function ordenar_usuarios_form($form, &$form_state){
+  $form['ordenar_usuarios'] = array(
+    '#prefix' => '<div class="">',
+    '#type' => 'select',
+    '#options' => array(
+      0 => ORDENAR_POR,
+      1 => "",
+      2 => "",
+      3 => "",
+      ),
+    '#suffix' => '</div>',
+  );
+  return $form;
+}
+
+/*Select - Ordenar Canales*/
+function ordenar_canales_form($form, &$form_state){
+  $form['ordenar_canales'] = array(
+    '#prefix' => '<div class="">',
+    '#type' => 'select',
+    '#options' => array(
+      0 => ORDENAR_POR,
+      1 => "",
+      2 => "",
+      3 => "",
+      ),
+    '#suffix' => '</div>',
+  );
+  return $form;
+}
+
+/*Select - Ordenar Grupos*/
+function ordenar_grupos_form($form, &$form_state){
+  $form['ordenar_grupos'] = array(
+    '#prefix' => '<div class="">',
+    '#type' => 'select',
+    '#options' => array(
+      0 => ORDENAR_POR,
+      1 => "",
+      2 => "",
+      3 => "",
+      ),
+    '#suffix' => '</div>',
+  );
+  return $form;
+}
+
+/*Filtros*/
+/*Filtrar - Cursos*/
+function filtrar_cursos_form($form, &$form_state){
+  $form['filtrar_cusos']['titulo_modalidad'] = array(
+    '#prefix' => '<div class="">',
+    '#markup' => '<b>'.MODALIDAD.'</b>',
+    '#suffix' => '</div>',
+  );
+  $form['filtrar_cusos']['opciones_modalidad'] = array(
+    '#prefix' => '<div class="">',
+    '#type' => 'select',
+    '#options' => array(
+      0 => TODOS,
+      1 => "",
+      2 => "",
+      3 => "",
+      ),
+    '#suffix' => '</div>',
+  );
+
+  $form['filtrar_cusos']['titulo_categoria'] = array(
+    '#prefix' => '<div class="">',
+    '#markup' => '<b>'.CATEGORIA.'</b>',
+    '#suffix' => '</div>',
+  );
+  $form['filtrar_cusos']['opciones_categoria'] = array(
+    '#prefix' => '<div class="">',
+    '#type' => 'select',
+    '#options' => array(
+      0 => TODOS,
+      1 => "",
+      2 => "",
+      3 => "",
+      ),
+    '#suffix' => '</div>',
+  );
+  return $form;
+}
+
+/*Filtrar - Empresas*/
+function filtrar_empresas_form($form, &$form_state){
+  $form['filtrar_empresas']['titulo_tipo_perfil'] = array(
+    '#prefix' => '<div class="">',
+    '#markup' => '<b>'.TIPO.'</b>',
+    '#suffix' => '</div>',
+  );
+  $form['filtrar_empresas']['opciones_tipo_perfil'] = array(
+    '#prefix' => '<div class="">',
+    '#type' => 'select',
+    '#options' => array(
+      0 => "",
+      1 => "",
+      2 => "",
+      3 => "",
+      ),
+    '#suffix' => '</div>',
+  );
+
+  $form['filtrar_empresas']['titulo_ubicacion'] = array(
+    '#prefix' => '<div class="">',
+    '#markup' => '<b>'.UBICACION.'</b>',
+    '#suffix' => '</div>',
+  );
+  $form['filtrar_empresas']['opciones_ubicacion'] = array(
+    '#prefix' => '<div class="">',
+    '#type' => 'select',
+    '#options' => array(
+      0 => "",
+      1 => "",
+      2 => "",
+      3 => "",
+      ),
+    '#suffix' => '</div>',
+  );
+  return $form;
+}
+
+/*Filtrar - Usuarios*/
+function filtrar_usuarios_form($form, &$form_state){
+  $form['filtrar_usuarios']['titulo_tipo_usuario'] = array(
+    '#prefix' => '<div class="">',
+    '#markup' => '<b>'.TIPO.'</b>',
+    '#suffix' => '</div>',
+  );
+  $form['filtrar_usuarios']['opciones_tipo_usuario'] = array(
+    '#prefix' => '<div class="">',
+    '#type' => 'select',
+    '#options' => array(
+      0 => TODOS,
+      1 => "",
+      2 => "",
+      3 => "",
+      ),
+    '#suffix' => '</div>',
+  );
+  return $form;
+}
+
+/*Filtrar - Canales*/
+function filtrar_canales_form($form, &$form_state){
+  $form['filtrar_canales']['titulo_categoria'] = array(
+    '#prefix' => '<div class="">',
+    '#markup' => '<b>'.CATEGORIA.'</b>',
+    '#suffix' => '</div>',
+  );
+  $form['filtrar_canales']['opciones_categoria'] = array(
+    '#prefix' => '<div class="">',
+    '#type' => 'select',
+    '#options' => array(
+      0 => TODOS,
+      1 => "",
+      2 => "",
+      3 => "",
+      ),
+    '#suffix' => '</div>',
+  );
+  return $form;
+}
+
+/*Filtrar - Grupos*/
+function filtrar_grupos_form($form, &$form_state){
+  $form['filtrar_grupos']['titulo_tipo_grupo'] = array(
+    '#prefix' => '<div class="">',
+    '#markup' => '<b>'.TIPO.'</b>',
+    '#suffix' => '</div>',
+  );
+  $form['filtrar_grupos']['opciones_tipo_grupo'] = array(
+    '#prefix' => '<div class="">',
+    '#type' => 'select',
+    '#options' => array(
+      0 => TODOS,
+      1 => "",
+      2 => "",
+      3 => "",
+      ),
+    '#suffix' => '</div>',
+  );
+  return $form;
+}

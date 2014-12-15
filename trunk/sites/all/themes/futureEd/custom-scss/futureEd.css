@@ -1,0 +1,204 @@
+.row {
+  max-width: 82.625em;
+  width: 82.625em;
+}
+
+.top-bar {
+  height: 3.8125em;
+  line-height: 45px;
+  background: #f36844;
+  margin-bottom: 1.875em;
+  position: fixed;
+  z-index: 99;
+  width: 100%;
+}
+
+.top-bar-registrate {
+  overflow: hidden;
+  height: 45px;
+  line-height: 45px;
+  position: relative;
+  background: #3cc0ce;
+  color: #FFFFFF;
+}
+
+h1 {
+  font-size: 2.125em;
+}
+
+h2 {
+  font-size: 1.6875em;
+}
+
+h3 {
+  font-size: 1.375em;
+}
+
+h4 {
+  font-size: 1.125em;
+}
+
+h5 {
+  font-size: 1.125em;
+}
+
+h6 {
+  font-size: 1em;
+}
+
+.l-footer {
+  background: #445262;
+}
+
+#main-menu a {
+  background: #F36844;
+  padding-top: 15px;
+}
+
+#expandir-perfil {
+  width: 27px;
+  height: 3.8125em;
+}
+
+#crear-curso {
+  color: #FFFFFF;
+}
+
+.btn-notificaciones {
+  position: relative;
+  top: 0px;
+}
+
+#btn-carrito {
+  left: 3.8125em;
+  top: -3.8125em;
+}
+
+#btn-wishlist {
+  left: 7.625em;
+  top: -7.625em;
+}
+
+#btn-carrito-logout {
+  left: 0px;
+  top: 0px;
+}
+
+#btn-wishlist-logout {
+  left: 3.8125em;
+  top: -3.8125em;
+}
+
+.conteo-notificaciones {
+  top: 3px;
+}
+
+#conteo-notificaciones {
+  position: absolute;
+  left: 55px;
+}
+
+#conteo-carrito {
+  position: absolute;
+  left: 118px;
+}
+
+#conteo-wishlist {
+  position: absolute;
+  left: 180px;
+}
+
+#conteo-carrito-logout {
+  position: absolute;
+  left: 55px;
+}
+
+#conteo-wishlist-logout {
+  position: absolute;
+  left: 118px;
+}
+
+#modal-notificaciones {
+  width: 200px;
+  height: 300px;
+  background-color: #999999;
+  position: absolute;
+  top: 60px;
+  z-index: 9999;
+  display: none;
+  left: -123px;
+}
+
+#contenedor-botones-header {
+  height: 3.8125em;
+}
+
+.regiones-principales {
+  margin-top: 4.8125em;
+}
+
+.active-panel {
+  display: block;
+}
+
+.inactive-panel {
+  display: none;
+}
+
+.tab {
+  background-color: #DDDDDD;
+  height: 2.5em;
+  width: 100%;
+  cursor: pointer;
+}
+
+.active-tab {
+  border-top: 2px solid #BBFFFF;
+}
+
+.inactive-tab {
+  border-top: hidden;
+}
+
+.contenedor-panels {
+  background-color: #FFFFEE;
+}
+
+.active-panel-anidado {
+  display: block;
+}
+
+.inactive-panel-anidado {
+  display: none;
+}
+
+.tab-anidado {
+  background-color: #EEEEEE;
+  height: 2.5em;
+  width: 100%;
+  cursor: pointer;
+}
+
+.active-tab-anidado {
+  font-weight: bold;
+}
+
+.inactive-tab-anidado {
+  font-weight: normal;
+}
+
+.contenedor-panels-anidado {
+  background-color: #FFFFFF;
+}
+
+.rate-stars {
+  padding: 0;
+}
+
+/*#modal-notificaciones2{
+  left: -63px;
+}
+
+#modal-notificaciones3{
+  left: -5px;
+}*/

@@ -1,0 +1,5 @@
+name = Blog
+description = Blog FED
+core = 7.x
+version = 3.5
+package = FUTUREED

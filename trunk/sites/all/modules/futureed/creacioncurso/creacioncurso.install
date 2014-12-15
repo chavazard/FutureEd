@@ -1,0 +1,44 @@
+<?php
+function creacioncurso_schema() {
+  $schema['curso_preguntas_frecuentes'] = array(
+      
+    'description' => 'Preguntas frecuentes de cursos',
+        'fields' => array(
+			'preguntaid' => array(
+				'description' => 'id',
+				'type' => 'serial',
+				'unsigned' => TRUE,
+				'not null' => TRUE,
+			),
+		  
+			'nodoid' => array(
+				'description' => 'id del nodo',
+				'type' => 'int',
+				'unsigned' => TRUE,
+				'not null' => TRUE,
+			),
+		  
+			'pregunta' => array(
+				'description' => 'pregunta',
+				'type' => 'varchar',
+				'length' => '255',
+				'not null' => TRUE,
+			),
+			
+			'respuesta' => array(
+				'description' => 'respuesta',
+				'type' => 'varchar',
+				'length' => '255',
+				'not null' => TRUE,
+			),
+		),
+	'primary key' => array('preguntaid'),
+  );
+  return $schema;
+}
+
+function creacioncurso_install() {
+  // Create my tables.
+  drupal_install_schema('creacioncurso');
+}
+?>

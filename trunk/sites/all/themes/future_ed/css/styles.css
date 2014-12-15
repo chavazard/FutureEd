@@ -1,0 +1,20 @@
+.full-width {
+    width: 100%;
+}
+
+.static-width {
+    width: 1024px;
+    /* 1200 */
+}
+
+.row {
+    max-width: 75rem;
+}
+
+#admin-menu a {
+    font-size: 11px;
+}
+
+h2 {
+    font-size: 1.3rem;
+}

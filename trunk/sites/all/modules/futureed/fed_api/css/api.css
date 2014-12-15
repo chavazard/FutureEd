@@ -1,0 +1,27 @@
+.link{
+	color: blue;
+	text-decoration: underline;
+}
+.link:hover{
+	color: #222;
+	cursor: pointer;
+}
+#api-results-container{
+	background-color: #333;
+	color: #fff;
+	margin-top: 20px;
+	font-family: Consolas;
+}
+#api-results-container-box{
+	padding: 20px;
+}
+#api-results-container-box li{
+	list-style: none;
+}
+#api-results-container-box span.key{
+	color: #73d1ff;
+	width: 300px;
+}
+#api-results-container-box span.string{
+	color: #ed2c7f;
+}

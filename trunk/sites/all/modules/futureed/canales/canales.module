@@ -1,0 +1,264 @@
+<?php
+
+module_load_include('inc','fedcorefront','inc/custom');
+module_load_include('inc','fedcorefront','includes/global.copywrite');
+module_load_include('inc','canales','inc/custom-ver-canal');
+
+
+    //module_load_include('inc','fedcorefront','inc/custom');
+    module_load_include('inc','cursos','inc/custom');
+
+/*
+Templates
+*/
+function canales_theme($existing,$type,$theme,$path){
+  return array(
+    /*------------ Ver Canal ------------*/
+    /* Bloque 1 - informacion */
+    'ver_canal_informacion' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/ver-canal/ver_canal_informacion',
+    ),
+    /* Bloque 2 - contenido */
+    'ver_canal_contenido' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/ver-canal/ver_canal_contenido',
+    ),
+    'ver_canal_cursos' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/ver-canal/ver_canal_cursos',
+    ),
+    'ver_canal_equipo' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/ver-canal/ver_canal_equipo',
+    ),
+    'ver_canal_politicas' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/ver-canal/ver_canal_politicas',
+    ),
+    'ver_canal_descripcion' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/ver-canal/ver_canal_descripcion',
+    ),
+    'elemento-canales-usuario' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/elementos-listados/elemento-canales-usuario'                
+    )
+  );
+}
+
+/*
+Informacion de Bloques
+*/
+function canales_block_info(){
+  /*------------ Ver Canal ------------*/
+  $blocks['ver-canal-bloque-1'] = array(
+    'info' => t('Ver Canal - Informacion General'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  $blocks['ver-canal-bloque-2'] = array(
+    'info' => t('Ver Canal - Contenido'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  $blocks['carrusel-canal-usuario'] = array(
+    'info' => t('Canales - Carrusel canales usuario'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  return $blocks;
+}
+
+/*
+Mostrando Bloques
+*/
+function canales_block_view($delta = ''){
+  
+  $nid_canal = arg(1);
+  
+  switch ($delta) {
+    /*------------ Ver Canal ------------*/
+    case 'ver-canal-bloque-1':
+      $block['content'] = show_ver_canal_informacion($nid_canal);
+      return $block;
+      break;
+    case 'ver-canal-bloque-2':
+      $block['content'] = show_ver_canal_contenido($nid_canal);
+      return $block;
+      break;
+    case 'carrusel-canal-usuario':
+      $uid_usuario = arg(1);
+      $block['content'] = mostrar_carrusel_canales_usuario($uid_usuario);
+      return $block;
+      break;
+  }
+}
+
+/*
+Menu
+*/
+function canales_menu(){
+  $items['ver-canal-politicas'] = array(
+    'title' => 'Politicas',
+    'page callback' => 'show_ver_canal_politicas',
+    'access arguments' => array('access_content'),
+  );
+  return $items;
+}
+
+/*
+Mostrando Templates
+*/
+/*------------ Ver Canal ------------*/
+function show_ver_canal_informacion($nid_canal){
+  $items = array();
+  $items = consultar_canal_db($nid_canal);
+  return theme('ver_canal_informacion', array('item' => $items));
+}
+
+function show_ver_canal_contenido($nid_canal){
+  $items = array();
+  $items = consultar_canal_detalle_db($nid_canal);
+  return theme('ver_canal_contenido', array('item' => $items));
+}
+
+function show_ver_canal_cursos($nid_curso, $pagina, $div_contenedor){
+  $nid_curso = 0;
+  
+  $resultadosPorPagina = 16;
+  $resultadosPorLinea = 4;
+
+  if ($pagina == null)
+      $pagina = 1;
+
+  $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+  $lim_fin = $pagina * $resultadosPorPagina;
+
+  $items = consultar_ver_canal_cursos_db($nid_curso, $lim_ini, $lim_fin);
+  $itemsProyectos = $items[0]['items'];
+
+  $theme_individual = 'ver_canal_cursos';
+
+  //Paginación
+  $f_name = 'show_ver_canal_cursos'; 
+  $parametros = 'nid_curso: '.$nid_curso;
+  $tema_paginacion = 'paginacion';
+    
+  $totalResultados = $items[0]['totalResultados']; 
+
+  mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos,  $theme_individual);
+  mostrar_paginacion($resultadosPorPagina,$itemsProyectos,$totalResultados,$f_name,$parametros,$div_contenedor,$tema_paginacion, $pagina);
+}
+
+function show_ver_canal_equipo($uid, $pagina, $div_contenedor){
+  $uid = 0;
+  
+  $resultadosPorPagina = 4;
+  $resultadosPorLinea = 4;
+
+  if ($pagina == null)
+      $pagina = 1;
+
+  $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+  $lim_fin = $pagina * $resultadosPorPagina;
+
+  $items = consultar_ver_canal_equipo_db($uid, $lim_ini, $lim_fin);
+  $itemsProyectos = $items[0]['items'];
+
+  $theme_individual = 'ver_canal_equipo';
+
+  mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos,  $theme_individual);
+}
+
+function show_ver_canal_politicas($nid_canal){
+  $items = array();
+  $items = consultar_canal_db($nid_canal);
+  print theme('ver_canal_politicas', array('item' => $items));
+}
+
+function show_canal_descripcion(){
+  print theme('canal_descripcion');
+}
+
+/*
+Creando Formulario
+*/
+
+/*------- Ver Canal - Formularios -------*/
+function busqueda_form($form, &$form_state){
+  $form['busqueda']['busqueda_campo_texto'] = array(
+    '#prefix' => '<div class="small-9 columns">',
+    '#type' => 'textfield',
+    '#maxlength' => 60,
+    '#attributes' =>array('placeholder' => PLACEHOLDER_BUSQUEDA),
+    '#suffix' => '</div>',
+  );
+  $form['busqueda']['busqueda_boton'] = array(
+    '#prefix' => '<div class="small-3 columns">',
+    '#type' => 'button',
+    '#value' => BUSQUEDA,
+    '#suffix' => '</div>',
+  );
+  return $form;
+}
+
+function mostrar_carrusel_canales_usuario($uid_usuario)
+{
+    global $user;
+    $id_slider = 'slider-canales-usuarios';
+    $resultados_por_pantalla = 3;
+
+    $tpl = 'elemento-canales-usuario';
+    $titulo = CANALES;
+    $tipo = 'canales';
+    
+    $items = consultar_canales_usuario_db($uid_usuario);
+    
+    $privacidad = $items[0]['field_usuario_privacidad_canales'];
+
+    if ($privacidad == 0){
+        return '';
+    }
+    
+    if (isset($items[0]['array_canales']) AND !is_null($items[0]['array_canales'])){
+        $info = $items[0]['array_canales'];
+        return  mostrar_carrusel($resultados_por_pantalla, $info, $tpl, $id_slider, $titulo, $tipo);    
+    }else{
+    
+        if ($user->uid != $uid_usuario){   //Si no se esta viendo el perfil propio
+            $mensaje = $items[0]['calc_usuario_nombre']." ".NO_TIENE_CANALES_ACTIVOS."<br>".PUEDES_SUGERIRLE_UN_CANAL;
+            $titulo = CANALES;
+            $tipo_carrusel   = "canales";
+            $label_boton = SUGERIR_CANAL;
+            $modal_sugerir = "modal-sugerir-canal";
+            $items = array('mensaje' => $mensaje, 'titulo' => $titulo, 'label_boton' => $label_boton, 'modal_sugerir' => $modal_sugerir,'tipo_carrusel' => $tipo_carrusel);
+            return theme('carrusel_error', array('item' => $items));
+        }
+    }
+}
+
+function filtros_form($form, &$form_state){
+  $form['filtros']['select_modalidad'] = array(
+    '#prefix' => '<div class="small-3 columns">',
+    '#type' => 'select',
+    '#options' => array(
+      0 => t('Modalidad'),
+      ),
+    '#suffix' => '</div>',
+  );
+  $form['filtros']['select_tipo_curso'] = array(
+    '#prefix' => '<div class="small-3 columns">',
+    '#type' => 'select',
+    '#options' => array(
+      0 => t('Tipo de Curso'),
+      ),
+    '#suffix' => '</div>',
+  );
+  $form['filtros']['select_ordenar'] = array(
+    '#prefix' => '<div class="small-3 columns">',
+    '#type' => 'select',
+    '#options' => array(
+      0 => t('Ordenar por'),
+      ),
+    '#suffix' => '</div>',
+  );
+  return $form;
+}

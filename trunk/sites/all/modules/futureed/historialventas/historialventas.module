@@ -1,0 +1,187 @@
+<?php
+/** 
+* Modulo de historial de ventas
+* creado por Ricardo Aguilera
+* ricardo.aguilera@playfullinteractive.com
+* Módulo para crear los boloques qie irán dentro del historial de ventas
+* Diseñado para el Proyecto de Future Education.
+* Octubre 2014
+*
+*
+*/
+/**
+* ====================LEEME====================
+* Para que éste módulo funcione adecuadamente, se debe de habilitar los siguientes bloques de la manera que se mencina:
+* -historial de ventas: 
+*   Ubicarlo en el main content y configurarlo para que se 
+*   muestre sólo bajo los siguientes paths:
+*     cuenta/configurar/historial_ventas
+*     cuenta/configurar/historial_ventas*
+*
+*
+*/
+
+module_load_include('inc', 'fedcorefront', 'includes/global.copywrite');
+
+function historialventas_block_info() {
+  $blocks['historialventas-actuales'] = array(
+    'info' => t('historial de ventas - Mes Actual'), 
+    'cache' => DRUPAL_NO_CACHE, //there are a number of caching options for this
+  );
+  $blocks['historialventas-mes-pasado'] = array(
+    'info' => t('historial de ventas - Mes Anterior'), 
+    'cache' => DRUPAL_NO_CACHE, //there are a number of caching options for this
+  );
+  $blocks['historialventas-facturadas'] = array(
+    'info' => t('historial de ventas - Facturadas'), 
+    'cache' => DRUPAL_NO_CACHE, //there are a number of caching options for this
+  );
+  return $blocks;
+}
+
+function historialventas_block_view($delta = ''){
+
+
+  if(user_access('access content')){ //good idea to check user perms here
+    // $block['subject'] = t('historialventas');
+     $block['content'] = historialventas_cargar($delta);
+
+     return $block;
+  }
+
+}
+
+function historialventas_cargar($tipoBusqueda){
+  $items = array();
+  //$items['path'] = drupal_get_path('module', 'includes'); //no modificar
+  $items['tipo'] = $tipoBusqueda; //no modificar
+  $items['data'] = historialventas_consultar_db($tipoBusqueda);
+// this is where the $items get sent to your default MYMODULE_BLOCK.tpl.php that gets 
+// registered below
+  return theme('historialventas', array('items' => $items)); 
+}
+
+//here you are registering your default tpl for the above block 
+function historialventas_theme() {   
+  $module_path = drupal_get_path('module', 'historialventas');
+
+  $base = array(
+    'path' => "$module_path/templates",   
+  );
+  return array(
+    'historialventas' => $base + array(
+      'template' => 'historialventas',  //leave off .tpl.php
+      'variables' => array('items' => NULL,),
+    ),   
+  ); 
+}
+
+
+
+function print_historial_ventas_actuales($nid_curso)
+{
+    //$items = consultar_preguntas_frecuentes($nid);
+    //print_r("llega aquí :p<br>");
+    $block = module_invoke('historialventas', 'block_view', 'historialventas-actuales');
+    //$my_form=drupal_get_form('historialcompras_block_view');
+    print_r($block['content']);
+    //print_r("<br>Aquí tmb :o");
+
+    //print theme('preguntas_frecuentes', array('info_curso' => $items[0]));
+}
+
+
+
+
+function print_historial_ventas_mes_pasado($nid_curso)
+{
+    //$items = consultar_preguntas_frecuentes($nid);
+    //print_r("llega aquí :p<br>");
+    $block = module_invoke('historialventas', 'block_view', 'historialventas-mes-pasado');
+    //$my_form=drupal_get_form('historialcompras_block_view');
+    print_r($block['content']);
+    //print_r("<br>Aquí tmb :o");
+
+    //print theme('preguntas_frecuentes', array('info_curso' => $items[0]));
+}
+
+
+
+
+function print_historial_ventas_facturadas($nid_curso)
+{
+    //$items = consultar_preguntas_frecuentes($nid);
+    //print_r("llega aquí :p<br>");
+    $block = module_invoke('historialventas', 'block_view', 'historialventas-facturadas');
+    //$my_form=drupal_get_form('historialcompras_block_view');
+    print_r($block['content']);
+    //print_r("<br>Aquí tmb :o");
+
+    //print theme('preguntas_frecuentes', array('info_curso' => $items[0]));
+}
+
+
+function historialventas_consultar_db($tipoBusqueda){
+
+
+  $arrResultados = array();
+
+  switch($tipoBusqueda){
+    case 'historialventas-actuales':
+      for($i=0;$i<3;$i++){
+        array_push($arrResultados,
+          array(
+
+            'titulo' => l('Ventas mes actual ','curso.com'),
+            'imagen' => 'http://placehold.it/200x200',
+            'datoPrincipal' => l('Ricardo','curso.com'),
+            'datoAdicional' => '01/01/2014',
+            'comportamientoBoton' => 'Ver Curso',
+            'tiles' => 'tile tile tile =)',
+            'valor1' => '1,000.00',
+            'valor2' => '5 estrellitas =)',
+          )
+        );
+      }
+    break;
+    case 'historialventas-mes-pasado':
+      for($i=0;$i<3;$i++){
+        array_push($arrResultados,
+          array(
+
+            'titulo' => l('Ventas mes Pasado ','curso.com'),
+            'imagen' => 'http://placehold.it/200x200',
+            'datoPrincipal' => l('Ricardo','curso.com'),
+            'datoAdicional' => '01/01/2014',
+            'comportamientoBoton' => 'Ver Curso',
+            'tiles' => 'tile tile tile =)',
+            'valor1' => '1,000.00',
+            'valor2' => '5 estrellitas =)',
+          )
+        );
+      }
+    break;
+    case 'historialventas-facturadas':
+      for($i=0;$i<3;$i++){
+        array_push($arrResultados,
+          array(
+
+            'titulo' => l('Ventas facturadas ','curso.com'),
+            'imagen' => 'http://placehold.it/200x200',
+            'datoPrincipal' => l('Ricardo','curso.com'),
+            'datoAdicional' => '01/01/2014',
+            'comportamientoBoton' => 'Ver Curso',
+            'tiles' => 'tile tile tile =)',
+            'valor1' => '1,000.00',
+            'valor2' => '5 estrellitas =)',
+          )
+        );
+      }
+    break;
+
+
+  }
+  
+  return $arrResultados;
+
+}

@@ -1,0 +1,5 @@
+name = Cursos
+description = Cursos de FutureEd
+core = 7.x
+version = 1.0
+package = FUTUREED

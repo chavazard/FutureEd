@@ -1,0 +1,4 @@
+name = historial de ventas
+description = Historiales de ventas.
+core = 7.x
+package = FUTUREED

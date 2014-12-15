@@ -1,0 +1,13 @@
+name = fed-corefront
+description = Repositorio de clases de front end que se utilizarán por el sistema.
+core = 7.x
+package = FUTUREED
+
+; Information added by Drupal.org packaging script on 2014-03-17
+version = "7.x-1"
+core = "7.x"
+project = "Core del Front"
+datestamp = "1395079454"
+
+;para definir el path de configuración de los canales 
+;configure = admin/config/content/canales

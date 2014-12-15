@@ -1,0 +1,469 @@
+<?php
+  module_load_include('inc', 'fedcorefront','inc/custom');
+  module_load_include('inc', 'fed_redsocial', 'includes/grupo/grupo.form');
+  module_load_include('inc', 'fed_redsocial', 'includes/grupo/grupo.validate');
+  module_load_include('inc', 'fed_redsocial', 'includes/grupo/grupo.submit');
+  module_load_include('inc', 'fedcorefront',  'includes/global.copywrite');
+    module_load_include('inc','fed_redsocial','inc/back-end');
+    module_load_include('inc','canales','inc/custom-ver-canal');
+  module_load_include('inc', 'fed_redsocial', 'inc/custom-grupo');
+  drupal_add_css(drupal_get_path('theme', 'future_ed') . '/custom-scss/listados.css');
+  //C:\xampp\htdocs\trunk\sites\all\themes\future_ed\custom-scss/listados.css
+
+  module_load_include('inc', 'fed_redsocial', 'inc/custom-grupo');
+
+
+function fed_redsocial_theme($existing,$type,$theme,$path) {   
+  return array(
+    'compartir-redes-sociales' => array(
+      'template' => 'templates/compartir-redes-sociales',
+    ),
+    'elemento_lista_usuarios' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/elemento-lista-usuarios',
+    ),
+    'lista_usuarios' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/lista-usuarios',
+    ),
+    'grupo-editar' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/grupo/editar',
+    ), 
+    'grupo-menu' => array(
+      'variables' => array('items' => NULL),     
+      'template' => 'templates/grupo/grupo',
+    ),
+    'grupo-detalle' => array(
+      'variables' => array('items' => NULL),     
+      'template' => 'templates/grupo/detalle',
+    ),
+    'grupo-miembros' => array(
+      'variables' => array('items' => NULL),     
+      'template' => 'templates/grupo/miembros',
+    ),
+
+    //Este es el tema, al que se le deben mandar las variables!!! 
+
+    'mis_grupos' => array(
+      'variables' => array('items' => NULL),     
+      'template' => 'templates/grupo/mis_grupos',
+    ),
+    'grupos_administrados' => array(
+      'variables' => array('items' => NULL),     
+      'template' => 'templates/grupo/grupos_administrados',
+    ),
+    
+    /* Modal Bloques */
+    'modal_iniciar_sesion' => array(
+      'template' => 'templates/modal/modal_iniciar_sesion',
+    ),
+    'modal_compartir_fed' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/modal/modal_compartir_fed',
+    ),
+    'modal_compartir_correo' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/modal/modal_compartir_correo',
+
+    ),
+    'elemento-grupos-usuario' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/elementos-listados/elemento-grupos-usuario'                
+    )   
+  ); 
+}
+
+
+function fed_redsocial_block_info() {
+  $blocks['compartir-redes-sociales-block'] = array(
+    'info' => t('RED SOCIAL - Compartir redes sociales'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  $blocks['grupo-editar'] = array(
+
+
+    'info' => t('RED SOCIAL - Grupos - Creacion'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  $blocks['grupo-menu'] = array(
+    'info' => t('RED SOCIAL - Grupos - menu'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  $blocks['grupo-detalle'] = array(
+    'info' => t('RED SOCIAL - Grupos - detalle'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  $blocks['grupo-miembros'] = array(
+    'info' => t('RED SOCIAL - Grupos - miembros'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  $blocks['mis_grupos'] = array(
+    'info' => t('RED SOCIAL - Grupos - Mis Grupos'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  $blocks['grupos_administrados'] = array(
+    'info' => t('RED SOCIAL - Grupos - Grupos Administrados'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  
+  /* Modal Bloques */
+  $blocks['iniciar-sesion-block'] = array(
+    'info' => t('RED SOCIAL - Modal inicias sesion'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  $blocks['compartir-fed-block'] = array(
+    'info' => t('RED SOCIAL - Modal compartir FED'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  $blocks['compartir-correo-block'] = array(
+    'info' => t('RED SOCIAL - Modal compartir correo'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  $blocks['carrusel-grupos-usuario'] = array(
+    'info' => t('RED SOCIAL - Carrusel grupos usuario'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );  
+  return $blocks;
+}
+
+function fed_redsocial_block_view($delta = '') {
+  $block = array();
+
+  switch ($delta) {
+
+      
+    case 'compartir-redes-sociales-block':
+      $block['content'] = theme('compartir-redes-sociales');                   
+    break;        
+    /* Bloques - Modal */
+    case 'iniciar-sesion-block':
+    $block['content'] = show_iniciar_sesion($delta);                
+    break;
+    case 'compartir-fed-block':
+    $block['content'] = show_compartir_fed($delta);                   
+    break;
+    case 'compartir-correo-block':
+    $block['content'] = show_compartir_correo($delta);                   
+    break;
+    case 'grupo-editar':
+      $block['content'] = theme('grupo-editar');
+    break;       
+    case 'grupo-menu':
+      $block['content'] = theme('grupo-menu');
+    break;    
+    case 'grupo-detalle':
+      $block['content'] = theme('grupo-detalle');
+    break;  
+    case 'grupo-miembros':
+      $block['content'] = theme('grupo-miembros');
+    break;
+    case 'mis-grupos':
+      $block['content'] = theme('mis-grupos');
+    break;
+    case 'grupos-administrados':
+      $block['content'] = theme('grupos-administrados');
+
+    break;
+    case 'carrusel-grupos-usuario':
+      $uid_usuario = arg(1);
+      $block['content'] = mostrar_carrusel_grupos_usuario($uid_usuario);
+      break;
+
+  }
+  return $block;
+}
+
+
+function redsocial_menu(){
+
+  $items['grupoNuevo'] = array(
+    'title' => 'Creacion de Grupo',
+    'page callback' => 'redsocial_void',
+    'page arguments' => array(NULL),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['grupos'] = array(
+    'title' => 'Grupos',
+    'page callback' => 'redsocial_void',
+    'page arguments' => array(NULL),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['gruposAdministrados'] = array(
+    'title' => 'GruposAdministrados',
+    'page callback' => 'redsocial_void',
+    'page arguments' => array(NULL),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['grupo/%'] = array(
+    'title' => 'Grupo',
+    'page callback' => 'redsocial_void',
+    'page arguments' => array(NULL),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+function toggle_me_gusta($nid,$uid,$me_gusta){
+    toggle_likes_db($nid,$uid,$me_gusta);
+    if ($me_gusta == 'true'){ 
+        $nuevoHiperVinculo = '<a href="javascript: callAjax(\'me-gusta-'.$nid.'\',\'toggle_me_gusta\',\'nid:'.$nid.', me_gusta: false, uid: '.$uid.'\');" onclick="this.parentNode.removeChild(this);">'.t('Ya no me gusta').'</a>';        
+    }
+    else{  
+        $nuevoHiperVinculo = '<a href="javascript: callAjax(\'me-gusta-'.$nid.'\',\'toggle_me_gusta\',\'nid:'.$nid.', me_gusta: true, uid: '.$uid.'\');" onclick="this.parentNode.removeChild(this);">'.t('Me gusta').'</a>';
+    }
+
+    print $nuevoHiperVinculo;    
+}
+
+
+/*
+Mostrando Templates
+*/
+/*------------ Ver Canal ------------*/
+function show_iniciar_sesion(){
+  return theme('modal_iniciar_sesion');
+}
+
+function show_compartir_fed($nid_canal){
+  $items = array();
+  //$items = consultar_canal_db($nid_canal);
+  return theme('modal_compartir_fed', array('item' => $items));
+}
+
+function show_compartir_correo($nid_canal){
+  $items = array();
+  //$items = consultar_canal_db($nid_canal);
+  return theme('modal_compartir_correo', array('item' => $items));
+}
+
+/*
+Creando Forms
+*/
+/*-------- Modal Formulario - Iniciar Sesion --------*/
+function modal_iniciar_sesion_form($form, &$form_state){
+  $form['iniciar_sesion']['inicio_sesion_campo_texto1'] = array(
+    '#prefix' => '<div class="small-12 columns">',
+    '#type' => 'textfield',
+    '#maxlength' => 60,
+    '#attributes' =>array('placeholder' => PLACEHOLDER_INICIAR_SESION_USUARIO),
+    '#suffix' => '</div>',
+  );
+  $form['iniciar_sesion']['inicio_sesion_campo_texto2'] = array(
+    '#prefix' => '<div class="small-12 columns">',
+    '#type' => 'textfield',
+    '#maxlength' => 60,
+    '#attributes' =>array('placeholder' => PLACEHOLDER_INICIAR_SESION_CONTRASENA),
+    '#suffix' => '</div>',
+  );
+  $form['iniciar_sesion']['inicio_sesion_checkbox'] = array(
+    '#prefix' => '<div class="small-6 columns">',
+    '#type' => 'checkbox',
+    '#title' => INICIAR_SESION_RECORDAR,
+    '#suffix' => '</div>',
+  );
+  $form['iniciar_sesion']['inicio_sesion_constraseña'] = array(
+    '#prefix' => '<div class="small-6 columns">',
+    '#markup' => '<a href="#">'.'<u>'.INICIAR_SESION_CONTRASEÑA.'</u>'.'</a>',
+    '#suffix' => '</div>',
+  );
+  $form['iniciar_sesion']['iniciar_sesion_boton1'] = array(
+    '#prefix' => '<div class="small-12 columns"><a href="#" data-reveal-id="compartir-fed">',
+    '#type' => 'button',
+    '#value' => INICIAR_SESION_BOTON1, 
+    '#suffix' => '</a></div>',
+  );
+  $form['hr1'] = array(
+    '#markup' => '<hr>',
+  );
+  $form['inicio_sesion_txt1'] = array(
+    '#prefix' => '<div class="small-12 columns">',
+    '#markup' => '<h5>'.'¿'.INICIAR_SESION_TXT.'?'.'</h5>',
+    '#suffix' => '</div>',
+  );
+  $form['iniciar_sesion_boton2'] = array(
+    '#prefix' => '<div class="small-12 columns">',
+    '#type' => 'button',
+    '#value' => INICIAR_SESION_BOTON2, 
+    '#suffix' => '</div>',
+  );
+  return $form;
+}
+
+/*-------- Modal Formulario - Compartir FED --------*/
+function modal_compartir_fed_form($form, &$form_state){
+  $form['compartir_fed']['compartir_fed_text1'] = array(
+    '#prefix' => '<div class="small-12 columns">',
+    '#markup' => COMPARTIR_FED_TEXT,
+    '#suffix' => '</div>',
+  );
+
+  $form['compartir_fed']['compartir_fed_select'] = array(
+    '#prefix' => '<div class="small-12 columns">',
+    '#type' => 'select',
+    '#options' => array(
+      '' => t(''),
+      'mensaje' => t('En mensaje privado'),
+      'muro' => t('En mi muro'),
+      'grupo' => t('En un grupo'),
+      ),
+    '#suffix' => '</div>',
+  );
+
+  /*Opciones*/
+  //Opcion 1
+  $form['compartir_fed']['mensaje_privado_texto1'] = array(
+    '#prefix' => '<div class="small-12 columns" style="display: none;" id="mensaje_privado_texto1">',
+    '#markup' => t('Buscar Usuario(s):'),
+    '#suffix' => '</div>',
+  );
+
+  $form['compartir_fed']['mensaje_privado_texto2'] = array(
+    '#prefix' => '<div class="small-12 columns" style="display: none;" id="mensaje_privado_texto2">',
+    '#markup' => t('Agrega varios usuarios separandolos con comas.'),
+    '#suffix' => '</div>',
+  );
+
+   $form['compartir_fed']['boton_busqueda'] = array(
+    '#prefix' => '<div class="small-3 columns" style="display: none;" id="boton_busqueda">',
+    '#markup' => t('Boton busqueda'),
+    '#suffix' => '</div>',
+  );
+
+  $form['compartir_fed']['mensaje_privado_campo'] = array(
+    '#prefix' => '<div class="small-9 columns" style="display: none;" id="mensaje_privado_campo">',
+    '#type' => 'textfield',
+    '#maxlength' => 60,
+    '#suffix' => '</div>',
+  );
+  /**/
+
+  //Opcion 3
+  $form['compartir_fed']['grupo_select_titulo'] = array(
+    '#prefix' => '<div class="small-12 columns" style="display: none;" id="grupo_select_titulo">',
+    '#markup' => t('Seleccionar grupo:'),
+    '#suffix' => '</div>',
+  );
+
+  $form['compartir_fed']['grupo_select_opciones'] = array(
+    '#prefix' => '<div class="small-12 columns" style="display: none;" id="grupo_select_opciones">',
+    '#type' => 'select',
+    '#options' => array(
+      '' => t(''),
+      ),
+    '#suffix' => '</div>',
+  );
+  /**/
+  /**********/
+
+  $form['compartir_fed']['mensaje_titulo'] = array(
+    '#prefix' => '<div class="small-12 columns">',
+    '#markup' => MENSAJE_TITULO,
+    '#suffix' => '</div>',
+  );
+
+  $form['compartir_fed']['mensaje_textarea'] = array(
+    '#prefix' => '<div class="small-12 columns">',
+    '#type' => 'textarea',
+    '#attributes' =>array('placeholder' => PLACEHOLDER_MENSAJE),
+    '#suffix' => '</div>',
+  );
+
+  $form['compartir_fed']['compartir_fed_boton'] = array(
+    '#prefix' => '<div class="small-12 columns">',
+    '#type' => 'button',
+
+    '#value' => COMPARTIR_FED_BOTON, 
+    '#suffix' => '</div>',
+  );
+  return $form;
+}
+
+/*-------- Modal Formulario - Compartir Correo --------*/
+function modal_compartir_correo_form($form, &$form_state){
+  $form['compartir_correo']['compartir_correo_text1'] = array(
+    '#prefix' => '<div class="small-6 columns">',
+    '#markup' => COMPARTIR_CORREO_TEXT1,
+    '#suffix' => '</div>',
+  );
+  
+  $form['compartir_correo']['compartir_correo_textfield'] = array(
+    '#prefix' => '<div class="small-12 columns">',
+    '#type' => 'textfield',
+    '#attributes' => array('placeholder' => PLACEHOLDER_COMPARTIR_CORREO_CAMPO),
+    '#suffix' => '</div>',
+  );
+
+  $form['compartir_correo']['compartir_correo_text2'] = array(
+    '#prefix' => '<div class="small-12 columns">',
+    '#type' => 'item',
+    '#markup' => COMPARTIR_CORREO_TEXT2,
+    '#suffix' => '</div>',
+  );
+  $form['compartir_correo']['compartir_correo_textarea'] = array(
+    '#prefix' => '<div class="small-12 columns">',
+    '#type' => 'textarea',
+    '#suffix' => '</div>',
+  );
+
+  $form['compartir_correo']['compartir_correo_boton'] = array(
+    '#prefix' => '<div class="small-12 columns">',
+    '#type' => 'button',
+    '#value' => COMPARTIR_CORREO_BOTON, 
+    '#suffix' => '</div>',
+  );
+  return $form;
+}
+
+/*---- Carrusel grupos de un usuario ------*/
+function mostrar_carrusel_grupos_usuario($uid_usuario)
+{
+    global $user;
+    $id_slider = 'slider-grupos-usuarios';
+    $resultados_por_pantalla = 3;
+
+    $tpl = 'elemento-grupos-usuario';
+    $titulo = GRUPOS;
+    $tipo = 'grupos';
+    
+    $items = consultar_grupos_usuario_db($uid_usuario);
+    
+    $privacidad = $items[0]['field_usuario_privacidad_grupos'];
+
+    if ($privacidad == 0){
+        return '';
+    }
+    
+    if (isset($items[0]['array_grupos']) AND !is_null($items[0]['array_grupos'])){
+        $info = $items[0]['array_grupos'];
+        return  mostrar_carrusel($resultados_por_pantalla, $info, $tpl, $id_slider, $titulo, $tipo);    
+    }else{
+    
+        if ($user->uid != $uid_usuario){   //Si no se esta viendo el perfil propio
+            $mensaje = $items[0]['calc_usuario_nombre']." ".NO_TIENE_GRUPOS_ACTIVOS."<br>".PUEDES_SUGERIRLE_UN_GRUPO;
+            $titulo = GRUPOS;
+            $tipo_carrusel   = "grupos";
+            $label_boton = SUGERIR_GRUPO;
+            $modal_sugerir = "modal-sugerir-grupo";
+            $items = array('mensaje' => $mensaje, 'titulo' => $titulo, 'label_boton' => $label_boton, 'modal_sugerir' => $modal_sugerir,'tipo_carrusel' => $tipo_carrusel);
+            return theme('carrusel_error', array('item' => $items));
+        }
+    }
+}
+
+
+/**
+* Función que sirve para regresar un null, que sólamente se necesita
+* para poder agregar algún path al sistema y que no devuelva "page not found".
+* en realidad, se puede utilizar para regresar un null a cualquier otra función, 
+* sin que Drupal marque un error.
+* Desarrollado por Ricardo Aguilera
+* el 24 de Noviembre del 2014
+*/
+function redsocial_void(){
+
+  return "";
+}

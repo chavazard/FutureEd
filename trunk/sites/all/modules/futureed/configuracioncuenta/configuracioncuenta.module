@@ -1,0 +1,308 @@
+<?php
+/** 
+* Modulo de configuración de cuenta
+* creado por Ricardo Aguilera
+* ricardo.aguilera@playfullinteractive.com
+* Módulo para configurción de cuentas
+* Diseñado para el Proyecto de Future Education.
+* Octubre 2014
+*
+*
+*/
+
+/**
+* ====================LEEME====================
+* Para que éste módulo funcione adecuadamente, se debe de habilitar los siguientes bloques de la manera que se mencina:
+* -creación de curso - menú de estátus: 
+*   Ubicarlo en la sidebar first(o la barra lateral del lado izquierdo) y configurarlo para que se 
+*   muestre sólo bajo los siguientes paths:
+*     cuenta/configurar
+*     cuenta/configurar*
+* -creación de curso - formulario general: 
+*   Ubicarlo en la sidebar first(o la barra lateral del lado izquierdo) y configurarlo para que se 
+*   muestre sólo bajo los siguientes paths:
+*     cuenta/configurar
+*     cuenta/configurar*
+*
+*
+*/
+
+
+module_load_include('inc', 'configuracioncuenta', 'includes/configuracioncuenta.navigation');
+module_load_include('inc', 'configuracioncuenta', 'includes/configuracioncuenta.validate');
+module_load_include('inc', 'configuracioncuenta', 'includes/configuracioncuenta.submit');
+module_load_include('inc', 'configuracioncuenta', 'includes/configuracioncuenta.misc');
+module_load_include('inc', 'configuracioncuenta', 'includes/configuracioncuenta.historialventas');
+module_load_include('inc', 'configuracioncuenta', 'includes/configuracioncuenta.historialcompras');
+module_load_include('inc', 'fedcorefront', 'includes/global.copywrite');
+
+drupal_add_css(drupal_get_path('theme', 'future_ed') . '/custom-scss/configuracion-cuenta.css');
+
+//drupal_add_css('css/configuracioncuenta.css', array('type' => 'external'));
+
+/**
+ * Implements hook_menu().
+ */
+function configuracioncuenta_menu() {
+
+
+  $items = array();
+  
+  $items['cuenta/configurar'] = array(
+    'title' => TITULO_FORMULARIO_CUENTA,
+    'page callback' => 'drupal_get_form',
+    //'page arguments' => array('configuracioncuenta_form'),
+    'access arguments' => array('access content'),
+    'file' => 'includes/configuracioncuenta.form.inc',
+    'type' => MENU_CALLBACK,
+  );
+  
+  $items['cuenta/completo'] = array(
+    'title' => TITULO_FORMULARIO_COMPLETO,
+    'page callback' => 'configuracioncuenta_complete',
+    'page arguments' => array(),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+
+function configuracioncuenta_block_info() {
+
+  $blocks['confcuenta-menu'] = array(
+    'info' => t('configuración de cuenta - menú de estátus'), 
+    'cache' => DRUPAL_NO_CACHE, 
+  );
+  $blocks['confcuenta-infogeneral'] = array(
+    'info' => t('configuración de cuenta - Formulario General'), 
+    'cache' => DRUPAL_NO_CACHE, 
+  );
+   $blocks['historialventas-actuales'] = array(
+    'info' => t('historial de ventas - Mes Actual'), 
+    'cache' => DRUPAL_NO_CACHE, 
+  );
+  $blocks['historialventas-mes-pasado'] = array(
+    'info' => t('historial de ventas - Mes Anterior'), 
+    'cache' => DRUPAL_NO_CACHE, 
+  );
+  $blocks['historialventas-facturadas'] = array(
+    'info' => t('historial de ventas - Facturadas'), 
+    'cache' => DRUPAL_NO_CACHE, 
+  );
+  $blocks['historialcompras'] = array(
+    'info' => t('historial de compras'), 
+    'cache' => DRUPAL_NO_CACHE, 
+  );
+  $blocks['confcuenta-path'] = array(
+    'info' => t('configuración de cuenta - Path'), 
+    'cache' => DRUPAL_NO_CACHE, 
+  );
+  return $blocks;
+}
+
+function configuracioncuenta_block_view($delta = ''){
+  
+  $block = array();
+
+  if(user_access('access content')){ //good idea to check user perms here
+       //$block['subject'] = t('Configuración de la Cuenta');
+       $block['content'] = configuracioncuenta_cargar($delta);
+
+
+        //$block['subject'] = t('Configuración de la Cuenta');
+       switch($delta){
+
+        case 'confcuenta-menu':
+          $block['content']=configuracioncuenta_cargar($delta);
+        break;
+        case 'confcuenta-infogeneral':
+          $block['content']=configuracioncuenta_cargar($delta);
+        break;
+        case 'confcuenta-path':
+          $block['content']=configuracioncuenta_cargar($delta);
+        break;
+        case 'historialventas-actuales':
+          $block['content']=historialventas_cargar($delta);
+        break;
+        case 'historialventas-mes-pasado':
+          $block['content']=historialventas_cargar($delta);
+        break;
+        case 'historialventas-facturadas':
+          $block['content']=historialventas_cargar($delta);
+        break;
+        case 'historialcompras':
+          $block['content']=historialcompras_cargar($delta);
+        break;
+       }
+  }
+  return $block;
+}
+
+function configuracioncuenta_cargar($tipoBusqueda){
+  global $user;
+  $items = array();
+  $items['path'] = drupal_get_path('module', 'configuracioncuenta'); //no modificar
+  $items['tipo'] = $tipoBusqueda; //no modificar
+  $items['data'] = configuracioncuenta_consultar_db($tipoBusqueda);
+  $items['user'] = $user;
+  return theme('configuracioncuenta', array('items' => $items)); 
+}
+
+
+function historialventas_cargar($tipoBusqueda){
+  global $user;
+  $items = array();
+  $items['tipo'] = $tipoBusqueda; //no modificar
+  $items['data'] = historialventas_consultar_db($tipoBusqueda);
+  $items['user'] = $user;
+  return theme('historialventas', array('items' => $items)); 
+}
+
+function historialcompras_cargar($tipoBusqueda){
+  global $user;
+  $items = array();
+  $items['tipo'] = $tipoBusqueda; //no modificar
+  $items['data'] = historialcompras_consultar_db($tipoBusqueda);
+  $items['user'] = $user;
+  return theme('historialcompras', array('items' => $items)); 
+}
+
+
+//here you are registering your default tpl for the above block 
+function configuracioncuenta_theme() { 
+  $module_path = drupal_get_path('module', 'configuracioncuenta');
+
+  $base = array(
+    'path' => "$module_path/templates",   
+  );
+
+  return array(
+    'configuracioncuenta' => $base + array(
+      'template' => 'configuracioncuenta',  //leave off .tpl.php
+      'variables' => array('items' => NULL,),
+    ),  
+    'historialcompras' => $base + array(
+      'template' => 'historialcompras',  //leave off .tpl.php
+      'variables' => array('items' => NULL,),
+    ), 
+    'historialventas' => $base + array(
+      'template' => 'historialventas',  //leave off .tpl.php
+      'variables' => array('items' => NULL,),
+    ),    
+  ); 
+}
+
+function configuracioncuenta_consultar_db($tipo){
+  $arrResultados = array(0=>"val1",1=>"val2");
+
+  return $arrResultados;
+}
+
+function print_historial_compras($nid_curso){
+
+    $block = module_invoke('configuracioncuenta', 'block_view', 'historialcompras');
+    print($block['content']);
+}
+function print_historial_ventas_actuales($nid_curso){
+
+    $block = module_invoke('configuracioncuenta', 'block_view', 'historialventas-actuales');
+    print($block['content']);
+}
+function print_historial_ventas_mes_pasado($nid_curso){
+
+    $block = module_invoke('configuracioncuenta', 'block_view', 'historialventas-mes-pasado');
+    print($block['content']);
+}
+function print_historial_ventas_facturadas($nid_curso){
+
+    $block = module_invoke('configuracioncuenta', 'block_view', 'historialventas-facturadas');
+    print($block['content']);
+}
+
+function historialcompras_consultar_db($tipoBusqueda){
+
+
+  $arrResultados = array();
+
+  for($i=0;$i<3;$i++){
+    array_push($arrResultados,
+      array(
+
+        'titulo' => l('Canales ','curso.com'),
+        'imagen' => 'http://placehold.it/200x200',
+        'datoPrincipal' => l('Ricardo','curso.com'),
+        'datoAdicional' => '01/01/2014',
+        'comportamientoBoton' => 'Ver Curso',
+        'tiles' => 'tile tile tile =)',
+        'valor1' => '1,000.00',
+        'valor2' => '5 estrellitas =)',
+      )
+    );
+  }
+  return $arrResultados;
+}
+function historialventas_consultar_db($tipoBusqueda){
+
+
+  $arrResultados = array();
+
+  switch($tipoBusqueda){
+    case 'historialventas-actuales':
+      for($i=0;$i<3;$i++){
+        array_push($arrResultados,
+          array(
+
+            'titulo' => l('Ventas mes actual ','curso.com'),
+            'imagen' => 'http://placehold.it/200x200',
+            'datoPrincipal' => l('Ricardo','curso.com'),
+            'datoAdicional' => '01/01/2014',
+            'comportamientoBoton' => 'Ver Curso',
+            'tiles' => 'tile tile tile =)',
+            'valor1' => '1,000.00',
+            'valor2' => '5 estrellitas =)',
+          )
+        );
+      }
+    break;
+    case 'historialventas-mes-pasado':
+      for($i=0;$i<3;$i++){
+        array_push($arrResultados,
+          array(
+
+            'titulo' => l('Ventas mes Pasado ','curso.com'),
+            'imagen' => 'http://placehold.it/200x200',
+            'datoPrincipal' => l('Ricardo','curso.com'),
+            'datoAdicional' => '01/01/2014',
+            'comportamientoBoton' => 'Ver Curso',
+            'tiles' => 'tile tile tile =)',
+            'valor1' => '1,000.00',
+            'valor2' => '5 estrellitas =)',
+          )
+        );
+      }
+    break;
+    case 'historialventas-facturadas':
+      for($i=0;$i<3;$i++){
+        array_push($arrResultados,
+          array(
+
+            'titulo' => l('Ventas facturadas ','curso.com'),
+            'imagen' => 'http://placehold.it/200x200',
+            'datoPrincipal' => l('Ricardo','curso.com'),
+            'datoAdicional' => '01/01/2014',
+            'comportamientoBoton' => 'Ver Curso',
+            'tiles' => 'tile tile tile =)',
+            'valor1' => '1,000.00',
+            'valor2' => '5 estrellitas =)',
+          )
+        );
+      }
+    break;
+
+
+  }
+  
+  return $arrResultados;
+}
+

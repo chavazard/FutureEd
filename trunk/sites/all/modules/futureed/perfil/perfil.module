@@ -1,0 +1,1457 @@
+<?php
+
+/*
+Modulo creado por: Rene Camacho
+*/
+
+module_load_include('inc','fedcorefront','inc/custom');
+
+/*Empresa*/
+module_load_include('inc','perfil','inc/custom-empresa');
+module_load_include('inc','perfil','inc/custom-nosotros');
+
+/*Usuario*/
+module_load_include('inc','perfil','inc/custom-usuario');
+module_load_include('inc','perfil','inc/custom-lista-seguimiento');
+module_load_include('inc','perfil','inc/custom-cursos');
+module_load_include('inc','perfil','inc/custom-canales');
+module_load_include('inc','perfil','inc/custom-proyectos');
+module_load_include('inc','perfil','inc/custom-usuarios-sugeridos');
+module_load_include('inc','perfil','inc/custom-informacion');
+
+module_load_include('inc','fedcorefront','includes/global.copywrite');
+
+module_load_include('inc', 'perfil', 'includes/showcase/showcase.form');
+module_load_include('inc', 'perfil', 'includes/showcase/showcase.submit');
+module_load_include('inc', 'perfil', 'includes/showcase/showcase.validate');
+
+
+
+/*
+Templates
+*/
+function perfil_theme($existing,$type,$theme,$path){
+  return array(
+    /*---------------- Empresa ----------------*/
+    /* Header Empresa */
+    'header_empresa' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/header/header_empresa',
+    ),
+    /* Informacion */
+    'empresa_informacion_contacto' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/informacion/empresa_informacion_contacto',
+    ),
+    /* Nosotros */
+    'empresa_nosotros_contacto' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/nosotros/empresa_nosotros_contacto',
+    ),
+    'empresa_sobre_nosotros' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/nosotros/empresa_sobre_nosotros',
+    ),
+
+    /*---------------- Usuario ----------------*/
+    /*Privacidad*/
+    'usuario_privacidad' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/privacidad/usuario_privacidad',
+    ),
+    /* Header Usuario */
+    'header_usuario' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/header/header_usuario',
+    ),
+    'lista_seguimiento' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/lista_seguimiento/lista_seguimiento',
+    ),
+    'siguiendo' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/lista_seguimiento/siguiendo',
+    ),
+    'seguidores' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/lista_seguimiento/seguidores',
+    ),
+    /* Informacion */
+    'usuario_informacion_personal' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/informacion/usuario_informacion_personal',
+    ),
+    'usuario_informacion_profesional' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/informacion/usuario_informacion_profesional',
+    ),
+    /* Cursos */
+    'cursos' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/cursos/cursos',
+    ),
+    /*-- Cursos Comprados --*/
+    'cursos_comprados_actuales' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/cursos/cursos_comprados_actuales',
+    ),
+    'cursos_comprados_pasados' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/cursos/cursos_comprados_pasados',
+    ),
+    'cursos_comprados_tomar' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/cursos/cursos_comprados_tomar',
+    ),
+    /**/
+    'modal_calificar' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/cursos/modal/modal_calificar',
+    ),
+    'modal_calificar_info' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/cursos/modal/modal_calificar_info',
+    ),
+    /**/
+    /*-- Cursos Creados --*/
+    'cursos_creados_todos' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/cursos/cursos_creados_todos',
+    ),
+    'cursos_creados_actuales' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/cursos/cursos_creados_actuales',
+    ),
+    'cursos_creados_pasados' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/cursos/cursos_creados_pasados',
+    ),
+    /* Canales */
+    'canales' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/canales/canales',
+    ),
+    /*-- Mis Canales --*/
+    'mis_canales_bienvenida' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/canales/mis_canales_bienvenida',
+    ),
+    'mis_canales' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/canales/mis_canales',
+    ),
+    /*-- Canales que administro --*/
+    'canales_administrar' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/canales/canales_administrar',
+    ),
+    /*-- Crear Canal --*/
+    'crear_canal' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/canales/crear_canal',
+    ),
+    'canal_tutores' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/canales/crear-canal/canal_tutores'
+    ),
+    'canal_cursos' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/canales/crear-canal/canal_cursos'
+    ),
+    'canal_administradores' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/canales/crear-canal/canal_administradores'
+    ),
+    /********************/
+    //Showcases, creación, edición y detalle
+    //Creado el 19 de Noviembre del 2014
+    //Por Ricardo Aguilera Zamarripa
+
+
+
+    'showcase' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/showcase/editar',
+    ),
+    'showcase_detalle' => array(
+      'variables' => get_detalle_showcase(),
+      'template' => 'templates/showcase/mostrar_detalle',
+    ),
+    //Fin de showcase
+    
+    //Modales para sugerir cursos, canales o grupos a usuario//
+    //Creado el 3 de Diciembre del 2014
+    //Por David Terrones
+    'sugerir_a_usuario' => array(
+      'variables' => get_detalle_showcase(),
+      'template' => 'templates/modals/sugerir_a_usuario',
+    ),
+    /*Usuarios Sugeridos*/
+    'usuarios_sugeridos' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/usuarios_sugeridos/usuarios_sugeridos',
+    ),
+    'item_usuarios_sugeridos' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/usuarios_sugeridos/item_usuarios_sugeridos',
+    ),
+    /*****************/
+    /*Elementos carruseles y listados */
+    'elemento-proyectos-usuario' => array(
+            'variables' => array('items'=>NULL),
+            'template' => 'templates/elementos-listados/elemento-proyectos-usuario'                
+    )
+  );
+}
+
+/*
+Informacion de Bloques
+*/
+function perfil_block_info(){
+  /******Empresa******/
+  /*Header Empresa*/
+  $blocks['header-empresa'] = array(
+    'info' => t('Header - Empresa'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  /*Informacion*/
+  $blocks['empresa-informacion-contacto'] = array(
+    'info' => t('Empresa - Informacion (Contacto)'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  /*Nosotros*/
+  $blocks['empresa-nosotros-contacto'] = array(
+    'info' => t('Empresa - Contacto'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  $blocks['empresa-sobre-nosotros'] = array(
+    'info' => t('Empresa - Sobre nosotros'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  /******Usuario******/
+  /*Privacidad*/
+  $blocks['usuario-privacidad'] = array(
+    'info' => t('Usuario - Aviso de privacidad'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  /*Header Usuario*/
+  $blocks['header-usuario'] = array(
+    'info' => t('Header - Usuario'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  $blocks['lista-seguimiento'] = array(
+    'info' => t('Header - Lista de Seguimiento'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  /*Informacion*/
+  $blocks['usuario-informacion-personal'] = array(
+    'info' => t('Usuario - Informacion personal'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  $blocks['usuario-informacion-profesional'] = array(
+    'info' => t('Usuario - Informacion profesional'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  /*Cursos*/
+  $blocks['perfil-cursos'] = array(
+    'info' => t('Perfil - Cursos'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  $blocks['modal-calificar'] = array(
+    'info' => t('Perfil - Cursos (Modal - Calificar curso)'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  /*Canales*/
+  $blocks['perfil-canales'] = array(
+    'info' => t('Perfil - Canales'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  /***************************/
+  //Bloques para los showcases 
+  //Modificado el 19 de Noviembre del 2014
+  //Por Ricardo Aguilera
+  $blocks['showcase-editar'] = array(
+    'info' => t('Showcase - Formulario de creación y edición'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  $blocks['showcase-detalle'] = array(
+    'info' => t('Showcase - Detalle'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  $blocks['sugerir-a-usuario'] = array(
+    'info' => t('Perfil - Modal sugerir a usuario'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  /***************************/
+  /*Bloque - Usuarios sugeridos*/
+  $blocks['usuarios-sugeridos'] = array(
+    'info' => t('Usuarios Sugeridos'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  /***************************/
+  /*---- Carruseles David Terrones ------*/
+  $blocks['carrusel-proyecto-usuario'] = array(
+    'info' => t('Perfil - Carrusel proyectos usuario'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  /*---- Fin carruseles David Terrones ------*/
+  
+  return $blocks;
+}
+
+/*
+Mostrando Bloques
+*/
+function perfil_block_view($delta = ''){
+  $uid = arg(1);
+
+  switch ($delta) {
+    /*****Empresa*****/
+    /*Header Empresa*/
+    case 'header-empresa':
+      $block['content'] = show_header_empresa($uid);
+      return $block;
+      break;
+    /*Informacion*/
+    case 'empresa-informacion-contacto':
+      $block['content'] = show_empresa_informacion_contacto($uid);
+      return $block;
+    break;
+    /*Nosotros*/
+    case 'empresa-nosotros-contacto':
+      $block['content'] = show_empresa_nosotros_contacto($uid);
+      return $block;
+    break;
+    case 'empresa-sobre-nosotros':
+      $block['content'] = show_empresa_sobre_nosotros($uid);
+      return $block;
+    break;
+    /*****Usuario*****/
+    /*Privacidad*/
+    case 'usuario-privacidad':
+      $block['content'] = show_usuario_privacidad($uid);
+      return $block;
+    break;
+    /*Header Usuario*/
+    case 'header-usuario':
+      $block['content'] = show_header_usuario($uid);
+      return $block;
+    break;
+    case 'lista-seguimiento':
+      $block['content'] = show_listado_seguimiento($delta);
+      return $block;
+    break;
+    /*Informacion*/
+    case 'usuario-informacion-personal':
+      $block['content'] = show_usuario_informacion_personal($uid);
+      return $block;
+    break;
+    case 'usuario-informacion-profesional':
+      $block['content'] = show_usuario_informacion_profesional($uid);
+      return $block;
+    break;
+    /*Cursos*/
+    case 'perfil-cursos':
+      $block['content'] = show_cursos($uid);
+      return $block;
+      break;
+    case 'modal-calificar':
+      $block['content'] = show_modal_calificar($delta);
+      return $block;
+      break;
+    /*Canales*/
+    case 'perfil-canales':
+      $block['content'] = show_canales($uid);
+      return $block;
+      break; 
+
+    //Vista para los bloques de los showcases
+    //Modificado el 19 de Noviembre del 2014
+    //por por Ricardo Aguilera
+    case 'showcase-editar':
+      $block['content'] = show_showcase_editor($delta);
+      return $block;
+      break; 
+    case 'showcase-detalle':
+      $block['content'] = show_showcase_detalle($delta);
+      return $block;
+      break;
+    case 'sugerir-a-usuario':
+      $block['content'] = theme('sugerir_a_usuario', array('uid' => $uid));
+      return $block;
+      break;     
+
+    /*Bloque - Usuarios sugeridos*/
+    case 'usuarios-sugeridos':
+      $block['content'] = show_usuarios_sugeridos($delta);
+      return $block;
+      break;
+    /***************************/
+    /* Carruseles David Terrones */
+    case 'carrusel-proyecto-usuario':
+      $uid_usuario = arg(1);
+      $block['content'] = mostrar_carrusel_proyectos_usuario($uid_usuario);
+      return $block;
+      break;
+    /* Fin Carruseles David Terrones */
+  }
+}
+
+/*
+Menu
+*/
+function perfil_menu(){
+  /*----------------Usuario----------------*/
+  $items['usuario'] = array(
+    'page callback' => 'get_profile',
+    'access arguments' => array('access_content'),
+  );
+  $items['usuario/%/%'] = array(
+    'page callback' => 'get_profile_2',
+    'access arguments' => array('access_content'),
+    'page arguments' => array(1,2),
+  );
+  /****************************************/
+
+  /*----------------Empresa----------------*/
+  $items['empresa'] = array(
+    'page callback' => 'get_profile_empresa',
+    'access arguments' => array('access_content'),
+  );
+  $items['empresa/%/%'] = array(
+    'page callback' => 'get_profile_empresa_2',
+    'access arguments' => array('access_content'),
+    'page arguments' => array(1,2),
+  );
+  /****************************************/
+/*
+  $items['showcase-form'] = array(
+    'title' => 'Crear Canal',
+    'page callback' => 'show_crear_canal',
+    'page arguments' => array('canales_form'),
+    'access arguments' => array('access content'),
+    'type' => MENU_NORMAL_ITEM,
+  );*/
+
+  $items['showcaseNuevo'] = array(
+    'title' => 'Crear Showcase',
+
+
+    'page callback' => 'showcase_void',
+    'page arguments' => array($null),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+     /* 
+    'title' => TITULO_FORMULARIO_CUENTA,
+    'page callback' => 'drupal_get_form',
+    //'page arguments' => array('configuracioncuenta_form'),
+    'access arguments' => array('access content'),
+    'file' => 'includes/showcase.form.inc',
+    'type' => MENU_CALLBACK,*/
+    
+  );
+
+  $items['showcaseEditar'] = array(
+    'title' => 'Editar Showcase',
+
+
+    'page callback' => 'showcase_void',
+    'page arguments' => array($items=>get_idShowcase()),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    
+  );
+
+  $items['showcase'] = array(
+    'title' => 'Showcase',
+
+    'page callback' => 'showcase_void',
+    'page arguments' => array(NULL),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/*
+Menu - Funciones Dummy
+*/
+/*Usuario*/
+function get_profile(){
+  return "";
+}
+
+function get_profile_2($usuario,$path){
+  //Renderear el bloque que se esté buscando
+  switch($path){
+    case 'cursos':
+      //Mandar imprimir el bloque de cursos
+      $block = module_invoke('perfil', 'perfil-cursos', array('wildcard'=>$usuario));
+      print render($block['content']);
+    break;
+    case 'canales':
+      //Mandar imprimir el bloque de cursos
+      $block = module_invoke('perfil', 'perfil-canales', array('wildcard'=>$usuario));
+      print render($block['content']);
+    break;
+    case 'informacion':
+      //Mandar imprimir el bloque de informacion personal
+      $block = module_invoke('perfil', 'usuario-informacion-personal', array('wildcard'=>$usuario));
+      $block = module_invoke('perfil', 'usuario-informacion-profesional', array('wildcard'=>$usuario));
+      print render($block['content']);
+    break;
+    //Este error se puede registrar con un drupal_error()
+    default:
+      drupal_set_message("Access Denied");
+      $dest = drupal_get_destination();
+      drupal_goto('usuario', $dest); 
+    break;
+  }
+  return "";
+}
+
+/*Empresa*/
+function get_profile_empresa(){
+  return "";
+}
+
+function get_profile_empresa_2($empresa,$path){
+  switch($path){
+    case 'informacion':
+      $block = module_invoke('perfil', 'empresa-informacion-contacto', array('wildcard'=>$empresa));
+      print render($block['content']);
+    break;
+    case 'nosotros':
+      $block = module_invoke('perfil', 'empresa-nosotros-contacto', array('wildcard'=>$empresa));
+      $block = module_invoke('perfil', 'empresa-sobre-nosotros', array('wildcard'=>$empresa));
+      print render($block['content']);
+    break;
+    default:
+      drupal_set_message("Access Denied");
+      $dest = drupal_get_destination();
+      drupal_goto('empresa', $dest); 
+    break;
+  }
+  return "";
+}
+
+/*
+Mostrando Templates
+*/
+
+/*---------------- Empresa ----------------*/
+/* Header Empresa */
+function show_header_empresa($uid){
+  $items = array();
+  $tokens = explode('/', current_path());
+  $arrExcuir = array(
+      'informacion',
+      'nosotros',
+      'cursos',
+      'canales',
+      'grupos',
+      'productos'
+    );
+
+  if(in_array(strtolower($tokens[sizeof($tokens)-1]), $arrExcuir)){
+      $wildcardValue= $tokens[sizeof($tokens)-2];
+  }
+  else{
+    if(strtolower($tokens[sizeof($tokens)-1])!='empresa'){
+      $wildcardValue= $tokens[sizeof($tokens)-1];
+    }
+    else{
+      $wildcardValue="miNombre";
+    }
+  }
+  $items = consultar_empresa_perfil_db($uid);
+  return theme('header_empresa', array('item' => $items,'wildcard'=>$wildcardValue));
+}
+
+/* Informacion */
+function show_empresa_informacion_contacto($uid){
+  $items = array();
+  $items = consultar_empresa_nosotros_contacto_db($uid);
+  //var_dump($items);
+  //if ($items[''] == 1) {
+  //return "";
+  //} else{  
+  return theme('empresa_informacion_contacto', array('item' => $items));
+  //}
+}
+
+/* Nosotros */
+function show_empresa_nosotros_contacto($uid){
+  $items = array();
+  $items = consultar_empresa_nosotros_contacto_db($uid);
+  return theme('empresa_nosotros_contacto', array('item' => $items));
+}
+
+function show_empresa_sobre_nosotros($uid){
+  $items = array();
+  $items = consultar_empresa_sobre_nosotros_db($uid);
+  return theme('empresa_sobre_nosotros', array('item' => $items));
+}
+
+/*---------------- Usuario ----------------*/
+/*Privacidad*/
+function show_usuario_privacidad(){
+  return theme('usuario_privacidad');           
+}
+
+/* Header Usuario */
+function show_header_usuario($uid){
+  $items = array();
+  //Obtener el nombre del usuario, si es que existe
+  $tokens = explode('/', current_path());
+  $arrExcuir = array(
+      'informacion',
+      'proyectos',
+      'cursos',
+      'canales',
+      'grupos',
+      'productos'
+    );
+
+  if(in_array(strtolower($tokens[sizeof($tokens)-1]), $arrExcuir)){
+      $wildcardValue= $tokens[sizeof($tokens)-2];
+  }
+  else{
+    if(strtolower($tokens[sizeof($tokens)-1])!='usuario'){
+      $wildcardValue= $tokens[sizeof($tokens)-1];
+    }
+    else{
+      $wildcardValue="miNombre";
+    }
+  }
+  $items = consultar_usuarios_perfil_db($uid);
+  return theme('header_usuario', array('item' => $items,'wildcard'=>$wildcardValue));
+}
+
+/* Lista seguimiento */
+function show_listado_seguimiento(){
+  return theme('lista_seguimiento');           
+}
+
+function show_siguiendo($uid, $pagina, $div_contenedor){
+  $resultadosPorPagina = 21;
+  $resultadosPorLinea = 3;
+
+  if ($pagina == null)
+      $pagina = 1;
+
+  $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+  $lim_fin = $pagina * $resultadosPorPagina;
+
+  $items = consultar_usuarios_siguiendo_db($nid_curso, $lim_ini, $lim_fin);
+  $itemsProyectos = $items[0]['items'];
+
+  $theme_individual = 'siguiendo';
+
+  mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos,  $theme_individual);
+
+  //Paginación
+  $f_name = 'show_siguiendo'; 
+  $parametros = 'uid: '.$uid;
+  $tema_paginacion = 'paginacion';
+    
+  $totalResultados = $items[0]['totalResultados']; 
+
+  mostrar_paginacion($resultadosPorPagina,$itemsProyectos,$totalResultados,$f_name,$parametros,$div_contenedor,$tema_paginacion, $pagina);       
+}
+
+function show_seguidores($uid, $pagina, $div_contenedor){
+  $resultadosPorPagina = 21;
+  $resultadosPorLinea = 3;
+
+  if ($pagina == null)
+      $pagina = 1;
+
+  $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+  $lim_fin = $pagina * $resultadosPorPagina;
+
+  $items = consultar_usuarios_seguidores_db($nid_curso, $lim_ini, $lim_fin);
+  $itemsProyectos = $items[0]['items'];
+
+  $theme_individual = 'seguidores';
+
+  mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos,  $theme_individual);
+
+  //Paginación
+  $f_name = 'show_seguidores'; 
+  $parametros = 'uid: '.$uid;
+  $tema_paginacion = 'paginacion';
+    
+  $totalResultados = $items[0]['totalResultados']; 
+
+  mostrar_paginacion($resultadosPorPagina,$itemsProyectos,$totalResultados,$f_name,$parametros,$div_contenedor,$tema_paginacion, $pagina);             
+}
+
+/* Informacion */
+function show_usuario_informacion_personal($uid){
+  $items = array();
+  $items = consultar_usuario_informacion_personal_db($uid);
+  //var_dump($items);
+  //if ($items['field_usuario_privacidad_persona'] == 1) {
+  //return "";
+  //} else{  
+  return theme('usuario_informacion_personal', array('item' => $items));
+  //}
+}
+
+function show_usuario_informacion_profesional($uid){
+  $items = array();
+  $items = consultar_usuario_informacion_profesional_db($uid);
+  return theme('usuario_informacion_profesional', array('item' => $items));
+}
+
+/* Cursos */
+function show_cursos(){
+  return theme('cursos');           
+}
+
+/*-Modal - Calificar curso comprado-*/
+function show_modal_calificar(){
+  return theme('modal_calificar');        
+}
+
+function show_cursos_calificar($nid){
+  $items = array();
+  $items = consultar_cursos_comprados_pasados_calificar_db($nid);
+  print theme('modal_calificar_info', array('item' => $items));
+}
+
+/*-Cursos Comprados-*/
+function show_cursos_comprados_actuales($uid, $pagina, $div_contenedor){
+  $resultadosPorPagina = 8;
+  $resultadosPorLinea = 4;
+
+  if ($pagina == null)
+      $pagina = 1;
+
+  $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+  $lim_fin = $pagina * $resultadosPorPagina;
+
+  $items = consultar_cursos_comprados_actuales_db($uid, $lim_ini, $lim_fin);
+  $itemsProyectos = $items[0]['items'];
+
+  $theme_individual = 'cursos_comprados_actuales';
+
+  mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos,  $theme_individual);
+
+  //Paginación
+  $f_name = 'show_cursos_comprados_actuales'; 
+  $parametros = 'uid: '.$uid;
+  $tema_paginacion = 'paginacion';
+    
+  $totalResultados = $items[0]['totalResultados']; 
+
+  mostrar_paginacion($resultadosPorPagina,$itemsProyectos,$totalResultados,$f_name,$parametros,$div_contenedor,$tema_paginacion, $pagina);
+}
+
+function show_cursos_comprados_pasados($uid, $pagina, $div_contenedor){
+  $resultadosPorPagina = 8;
+  $resultadosPorLinea = 4;
+
+  if ($pagina == null)
+      $pagina = 1;
+
+  $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+  $lim_fin = $pagina * $resultadosPorPagina;
+
+  $items = consultar_cursos_comprados_pasados_db($uid, $lim_ini, $lim_fin);
+  $itemsProyectos = $items[0]['items'];
+
+  $theme_individual = 'cursos_comprados_pasados';
+
+  mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos,  $theme_individual);
+
+  //Paginación
+  $f_name = 'show_cursos_comprados_pasados'; 
+  $parametros = 'uid: '.$uid;
+  $tema_paginacion = 'paginacion';
+    
+  $totalResultados = $items[0]['totalResultados']; 
+
+  mostrar_paginacion($resultadosPorPagina,$itemsProyectos,$totalResultados,$f_name,$parametros,$div_contenedor,$tema_paginacion, $pagina);                                           
+}
+
+function show_cursos_comprados_tomar($uid, $pagina, $div_contenedor){
+  $resultadosPorPagina = 8;
+  $resultadosPorLinea = 4;
+
+  if ($pagina == null)
+      $pagina = 1;
+
+  $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+  $lim_fin = $pagina * $resultadosPorPagina;
+
+  $items = consultar_cursos_comprados_tomar_db($uid, $lim_ini, $lim_fin);
+  $itemsProyectos = $items[0]['items'];
+
+  $theme_individual = 'cursos_comprados_tomar';
+
+  mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos,  $theme_individual);
+
+  //Paginación
+  $f_name = 'show_cursos_comprados_tomar'; 
+  $parametros = 'uid: '.$uid;
+  $tema_paginacion = 'paginacion';
+    
+  $totalResultados = $items[0]['totalResultados']; 
+
+  mostrar_paginacion($resultadosPorPagina,$itemsProyectos,$totalResultados,$f_name,$parametros,$div_contenedor,$tema_paginacion, $pagina);                                            
+}
+
+
+/*-Cursos Creados-*/
+function show_cursos_creados_todos($uid, $pagina, $div_contenedor){
+  $resultadosPorPagina = 8;
+  $resultadosPorLinea = 4;
+
+  if ($pagina == null)
+      $pagina = 1;
+
+  $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+  $lim_fin = $pagina * $resultadosPorPagina;
+
+  $items = consultar_cursos_creados_todos_db($uid, $lim_ini, $lim_fin);
+  $itemsProyectos = $items[0]['items'];
+
+  $theme_individual = 'cursos_creados_todos';
+
+  mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos,  $theme_individual);
+
+  //Paginación
+  $f_name = 'show_cursos_creados_todos'; 
+  $parametros = 'uid: '.$uid;
+  $tema_paginacion = 'paginacion';
+    
+  $totalResultados = $items[0]['totalResultados']; 
+
+  mostrar_paginacion($resultadosPorPagina,$itemsProyectos,$totalResultados,$f_name,$parametros,$div_contenedor,$tema_paginacion, $pagina); 
+}
+
+function show_cursos_creados_actuales($uid, $pagina, $div_contenedor){
+  $resultadosPorPagina = 8;
+  $resultadosPorLinea = 4;
+
+  if ($pagina == null)
+      $pagina = 1;
+
+  $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+  $lim_fin = $pagina * $resultadosPorPagina;
+
+  $items = consultar_cursos_creados_actuales_db($uid, $lim_ini, $lim_fin);
+  $itemsProyectos = $items[0]['items'];
+
+  $theme_individual = 'cursos_creados_actuales';
+
+  mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos,  $theme_individual);
+
+  //Paginación
+  $f_name = 'show_cursos_creados_actuales'; 
+  $parametros = 'uid: '.$uid;
+  $tema_paginacion = 'paginacion';
+    
+  $totalResultados = $items[0]['totalResultados']; 
+
+  mostrar_paginacion($resultadosPorPagina,$itemsProyectos,$totalResultados,$f_name,$parametros,$div_contenedor,$tema_paginacion, $pagina);
+}
+
+function show_cursos_creados_pasados($uid, $pagina, $div_contenedor){
+  $resultadosPorPagina = 8;
+  $resultadosPorLinea = 4;
+
+  if ($pagina == null)
+      $pagina = 1;
+
+  $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+  $lim_fin = $pagina * $resultadosPorPagina;
+
+  $items = consultar_cursos_creados_pasados_db($uid, $lim_ini, $lim_fin);
+  $itemsProyectos = $items[0]['items'];
+
+  $theme_individual = 'cursos_creados_pasados';
+
+  mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos,  $theme_individual);
+
+  //Paginación
+  $f_name = 'show_cursos_creados_pasados'; 
+  $parametros = 'uid: '.$uid;
+  $tema_paginacion = 'paginacion';
+    
+  $totalResultados = $items[0]['totalResultados']; 
+
+  mostrar_paginacion($resultadosPorPagina,$itemsProyectos,$totalResultados,$f_name,$parametros,$div_contenedor,$tema_paginacion, $pagina); 
+}
+
+/* Canales */
+function show_canales(){
+  return theme('canales');
+}
+
+function show_mis_canales_bienvenida(){
+  print theme('mis_canales_bienvenida');
+}
+
+function show_mis_canales($nid_canal, $pagina, $div_contenedor){
+  $nid_canal = 0;
+
+  $resultadosPorPagina = 8;
+  $resultadosPorLinea = 4;
+
+  if ($pagina == null)
+      $pagina = 1;
+
+  $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+  $lim_fin = $pagina * $resultadosPorPagina;
+
+  $items = consultar_mis_canales_db($nid_canal, $lim_ini, $lim_fin);
+  $itemsProyectos = $items[0]['items'];
+
+  $theme_individual = 'mis_canales';
+
+  //Paginación
+  $f_name = 'show_mis_canales'; 
+  $parametros = 'nid_canal: '.$nid_canal;
+  $tema_paginacion = 'paginacion';
+  
+  $totalResultados = $items[0]['totalResultados']; 
+  
+  if ($totalResultados == 0){
+    print theme('mis_canales_bienvenida');
+  }
+  else{
+  mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos,  $theme_individual);
+  mostrar_paginacion($resultadosPorPagina,$itemsProyectos,$totalResultados,$f_name,$parametros,$div_contenedor,$tema_paginacion, $pagina);
+  }
+}
+
+function show_canales_administrar($nid_canal, $pagina, $div_contenedor){
+  $nid_canal = 0;
+  
+  $resultadosPorPagina = 8;
+  $resultadosPorLinea = 4;
+
+  if ($pagina == null)
+      $pagina = 1;
+
+  $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+  $lim_fin = $pagina * $resultadosPorPagina;
+
+  $items = consultar_canales_administrar_db($nid_curso, $lim_ini, $lim_fin);
+  $itemsProyectos = $items[0]['items'];
+
+  $theme_individual = 'canales_administrar';
+
+  //Paginación
+  $f_name = 'show_canales_administrar'; 
+  $parametros = 'nid_canal: '.$nid_canal;
+  $tema_paginacion = 'paginacion';
+    
+  $totalResultados = $items[0]['totalResultados']; 
+
+  mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos,  $theme_individual);
+  mostrar_paginacion($resultadosPorPagina,$itemsProyectos,$totalResultados,$f_name,$parametros,$div_contenedor,$tema_paginacion, $pagina);
+}
+
+function show_crear_canal($nid_canal, $pagina, $div_contenedor){
+  print theme('crear_canal');
+}
+
+function show_crear_canal_tutores($uid_tutor, $pagina, $div_contenedor){
+  $items = array();
+  $items = consultar_crear_canal_tutores_db($uid_tutor);
+  print theme('canal_tutores', array('item' => $items));
+}
+
+function show_crear_canal_cursos($uid_curso, $pagina, $div_contenedor){
+  $items = array();
+  $items = consultar_crear_canal_cursos_db($uid_curso);
+  print theme('canal_cursos', array('item' => $items));
+}
+
+function show_crear_canal_administradores($uid_administrador, $pagina, $div_contenedor){
+  $items = array();
+  $items = consultar_crear_canal_administradores_db($uid_administrador);
+  print theme('canal_administradores', array('item' => $items));
+}
+
+/* Usuarios sugeridos */
+function show_usuarios_sugeridos(){
+  return theme('usuarios_sugeridos');
+}
+
+function show_item_usuarios_sugeridos($uid, $pagina, $div_contenedor){
+  $resultadosPorPagina = 4;
+  $resultadosPorLinea = 1;
+
+  if ($pagina == null)
+      $pagina = 1;
+
+  $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+  $lim_fin = $pagina * $resultadosPorPagina;
+
+  $items = consultar_item_usuarios_sugeridos_db($uid, $lim_ini, $lim_fin);
+  $itemsProyectos = $items[0]['items'];
+
+  $theme_individual = 'item_usuarios_sugeridos';
+
+  mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos,  $theme_individual);
+}
+/********************/
+
+/*
+Creando Formulario
+*/
+
+/*Formulario - Crear Canal*/
+function canales_form($form, &$form_state){
+  $uid = "(Nombre de Propietario)";
+
+  $form['nombre']['titulo_nombre'] = array(
+    '#prefix' => '<div class="small-2 columns">',
+    '#markup' => NOMBRE,
+    '#suffix' => '</div>',
+  );
+  $form['nombre']['campo_texto_nombre'] = array(
+    '#prefix' => '<div class="small-7 columns">',
+    '#required' => TRUE,
+    '#type' => 'textfield',
+    '#maxlength' => 60,
+    '#attributes' =>array('placeholder' => PLACEHOLDER_NOMBRE),
+    '#suffix' => '</div>',
+  );
+  $form['nombre']['tips_nombre'] = array(
+    '#prefix' => '<div class="small-3 columns">',
+    '#markup' => TIPS_NOMBRE,
+    '#suffix' => '</div>',
+  );
+
+
+  $form['hr1'] = array(
+    '#markup' => '<hr>',
+  );
+
+
+  $form['descripcion']['titulo_descripcion'] = array(
+    '#prefix' => '<div class="small-2 columns">',
+    '#markup' => DESCRIPCION,
+    '#suffix' => '</div>',
+  );
+  $form['descripcion']['textarea_descripcion'] = array(
+    '#prefix' => '<div class="small-7 columns">',
+    '#type' => 'textarea',
+    '#cols' => 60,
+    '#resizable' => FALSE,
+    '#rows' => 60,
+    '#attributes' =>array('placeholder' => PLACEHOLDER_DESCRIPCION),
+    '#suffix' => '</div>',
+  );
+  $form['descripcion']['tips_descripcion'] = array(
+    '#prefix' => '<div class="small-3 columns">',
+    '#markup' => TIPS_DESCRIPCION,
+    '#suffix' => '</div>',
+  );
+
+
+  $form['hr2'] = array(
+    '#markup' => '<hr>',
+  );
+
+
+  $form['propietario']['titulo_propietario'] = array(
+    '#prefix' => '<div class="small-2 columns">',
+    '#type' => 'item',
+    '#markup' => PROPIETARIO,
+    '#suffix' => '</div>',
+  );
+  $form['propietario']['item_propietario'] = array(
+    '#prefix' => '<div class="small-10 columns">',
+    '#type' => 'item',
+    '#markup' => $uid,
+    '#suffix' => '</div>',
+  );
+
+  
+  $form['hr3'] = array(
+    '#markup' => '<hr>',
+  );
+
+
+  $form['categoria']['titulo_categoria'] = array(
+    '#prefix' => '<div class="small-2 columns">',
+    '#markup' => CATEGORIA,
+    '#suffix' => '</div>',
+  );
+  $form['categoria']['select_categoria'] = array(
+    '#prefix' => '<div class="small-7 columns">',
+    '#type' => 'select',
+    '#options' => array(
+      0 => t('Categoria ...'),
+      1 => t('Humanidades'),
+      ),
+    '#suffix' => '</div>',
+  );
+  $form['categoria']['tips_categoria'] = array(
+    '#prefix' => '<div class="small-3 columns">',
+    '#type' => 'item',
+    '#markup' => TIPS_CATEGORIA,
+    '#suffix' => '</div>',
+  );
+
+
+  $form['hr4'] = array(
+    '#markup' => '<hr>',
+  );
+
+
+  $form['subcategoria']['titulo_subcategoria'] = array(
+    '#prefix' => '<div class="small-2 columns">',
+    '#markup' => SUBCATEGORIA,
+    '#suffix' => '</div>',
+  );
+  $form['subcategoria']['select_subcategoria'] = array(
+    '#prefix' => '<div class="small-7 columns">',
+    '#type' => 'select',
+    '#options' => array(
+      0 => t('Subcategoria ...'),
+      1 => t('Medicina'),
+      ),
+    '#suffix' => '</div>',
+  );
+  $form['subcategoria']['tips_subcategoria'] = array(
+    '#prefix' => '<div class="small-3 columns">',
+    '#markup' => TIPS_SUBCATEGORIA,
+    '#suffix' => '</div>',
+  );
+
+
+ $form['hr5'] = array(
+    '#markup' => '<hr>',
+  );
+
+   
+  $form['imagen']['tips_imagen'] = array(
+    '#prefix' => '<div class="small-4 columns">',
+    '#title' => IMAGEN,
+    '#type' => 'item',
+    '#markup' => TIPS_IMAGEN,
+    '#suffix' => '</div>',
+  );
+  $form['imagen']['file_imagen'] = array(
+    '#prefix' => '<div class="small-8 columns">',
+    '#type' => 'file',
+    '#suffix' => '</div>',
+  );
+
+
+  $form['hr6'] = array(
+    '#markup' => '<hr>',
+  );
+
+
+  $form['tutores']['lista_tutores'] = array(
+    '#markup' => '<div id="lista_tutores"></div>',
+  );
+  $form['tutores']['titulo_tutores'] = array(
+    '#prefix' => '<div class="small-2 columns">',
+    '#type' => 'item',
+    '#markup' => TUTORES,
+    '#suffix' => '</div>',
+  );
+  $form['tutores']['campo_texto_tutores'] = array(
+    '#prefix' => '<div class="small-5 columns">',
+    '#required' => TRUE,
+    '#type' => 'textfield',
+    '#maxlength' => 60,
+    '#attributes' =>array('placeholder' => PLACEHOLDER_TUTORES),
+    '#suffix' => '</div>',
+  );
+  $form['tutores']['hidden_tutores'] = array(
+    '#prefix' => '<div style="display:none;">',
+    '#required' => TRUE,
+    '#type' => 'textfield',
+    '#suffix' => '</div>',
+  );
+  $form['tutores']['agregar_tutores'] = array(
+    '#prefix' => '<div class="small-2 columns">',
+    '#type' => 'button',
+    '#value' => AGREGAR_TUTORES,
+    '#suffix' => '</div>',
+  );
+  $form['tutores']['tips_tutores'] = array(
+    '#prefix' => '<div class="small-3 columns">',
+    '#type' => 'item',
+    '#markup' => TIPS_TUTORES,
+    '#suffix' => '</div>',
+  );
+
+
+  $form['hr7'] = array(
+    '#markup' => '<hr>',
+  );
+
+
+  $form['agregar_cursos']['lista_agregar_cursos'] = array(
+    '#markup' => '<div id="lista_agregar_cursos"></div>',
+  );
+  $form['agregar_cursos']['titulo_agregar_cursos'] = array(
+    '#prefix' => '<div class="small-2 columns">',
+    '#type' => 'item',
+    '#markup' => AGREGAR_CURSOS,
+    '#suffix' => '</div>',
+  );
+  $form['agregar_cursos']['campo_texto_agregar_cursos'] = array(
+    '#prefix' => '<div class="small-5 columns">',
+    '#required' => TRUE,
+    '#type' => 'textfield',
+    '#maxlength' => 60,
+    '#attributes' =>array('placeholder' => PLACEHOLDER_AGREGAR_CURSOS),
+    '#suffix' => '</div>',
+  );
+  $form['agregar_cursos']['hidden_agregar_cursos'] = array(
+    '#prefix' => '<div style="display:none;">',
+    '#required' => TRUE,
+    '#type' => 'textfield',
+    '#suffix' => '</div>',
+  );
+  $form['agregar_cursos']['boton_agregar_cursos'] = array(
+    '#prefix' => '<div class="small-2 columns">',
+    '#type' => 'button',
+    '#value' => BOTON_AGREGAR_CURSOS,
+    '#suffix' => '</div>',
+  );
+  $form['agregar_cursos']['tips_agregar_cursos'] = array(
+    '#prefix' => '<div class="small-3 columns">',
+    '#type' => 'item',
+    '#markup' => TIPS_AGREGAR_CURSOS,
+    '#suffix' => '</div>',
+  );
+
+
+  $form['hr8'] = array(
+    '#markup' => '<hr>',
+  );
+
+
+  $form['administradores']['lista_administradores'] = array(
+    '#markup' => '<div id="lista_administradores"></div>',
+  );
+  $form['administradores']['titulo_administradores'] = array(
+    '#prefix' => '<div class="small-2 columns">',
+    '#type' => 'item',
+    '#markup' => ADMINISTRADORES,
+    '#suffix' => '</div>',
+  );
+  $form['administradores']['campo_texto_administradores'] = array(
+    '#prefix' => '<div class="small-5 columns">',
+    '#required' => TRUE,
+    '#type' => 'textfield',
+    '#maxlength' => 60,
+    '#attributes' =>array('placeholder' => PLACEHOLDER_ADMINISTRADORES),
+    '#suffix' => '</div>',
+  );
+  $form['administradores']['hidden_administradores'] = array(
+    '#prefix' => '<div style="display:none;">',
+    '#required' => TRUE,
+    '#type' => 'textfield',
+    '#suffix' => '</div>',
+  );
+  $form['administradores']['agregar_administradores'] = array(
+    '#prefix' => '<div class="small-2 columns">',
+    '#type' => 'button',
+    '#value' => AGREGAR_ADMINISTRADORES,
+    '#suffix' => '</div>',
+  );
+  $form['administradores']['tips_administradores'] = array(
+    '#prefix' => '<div class="small-3 columns">',
+    '#type' => 'item',
+    '#markup' => TIPS_ADMINISTRADORES,
+    '#suffix' => '</div>',
+  );
+
+
+  $form['boton'] = array(
+    '#type' => 'button',
+    '#value' => CANCELAR,
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => CAMBIOS,
+  );
+
+  return $form;
+}
+
+function canales_form_submit($form, &$form_state){
+  $form_state['rebuild'] = TRUE;
+}
+
+/*Formulario - Lista de Seguimiento*/
+function lista_seguimiento_form($form, &$form_state){
+  $form['lista_seguimiento']['busqueda_lupa'] = array(
+    '#prefix' => '<div class="small-2 columns">',
+    '#markup' => 'boton lupa',
+    '#suffix' => '</div>',
+  );
+  $form['lista_seguimiento']['busqueda_campo_texto'] = array(
+    '#prefix' => '<div class="small-3 columns">',
+    '#required' => TRUE,
+    '#type' => 'textfield',
+    '#maxlength' => 60,
+    '#attributes' =>array('placeholder' => 'Buscar usuario'),
+    '#suffix' => '</div>',
+  );
+  return $form;
+}
+
+/*Select - Cursos Comprados/Creados*/
+function cursos_comprados_comprados_form($form, &$form_state){
+  $form['cursos_comprados']['cursos_comprados_ordenar'] = array(
+    '#prefix' => '<div class="large-2 columns">',
+    '#type' => 'select',
+    '#options' => array(
+      0 => ORDENAR_POR,
+      1 => FECHA_INICIO,
+      2 => ORDEN_ALFABETICO,
+      ),
+    '#suffix' => '</div>',
+  );
+  return $form;
+}
+
+function cursos_comprados_creados_form($form, &$form_state){
+  $form['cursos_creados']['cursos_creados_ordenar'] = array(
+    '#prefix' => '<div class="large-2 columns">',
+    '#type' => 'select',
+    '#options' => array(
+      0 => ORDENAR_POR,
+      1 => FECHA_DE_INICIO,
+      2 => ORDEN_ALFABETICO,
+      ),
+    '#suffix' => '</div>',
+  );
+  return $form;
+}
+
+/*Formulario - Modal Calificar*/
+function curso_calificar_form($form, &$form_state){
+  $form['curso_calificar']['opinion1_titulo'] = array(
+    '#markup' => '
+    <div class="small-12 columns">
+      <b>¿Qué es lo que más te gusta del curso?</b>
+    </div>',
+  );
+  $form['curso_calificar']['opinion1_campo'] = array(
+    '#prefix' => '<div class="small-12 columns">',
+    '#type' => 'textarea',
+    '#resizable' => FALSE,
+    '#attributes' =>array('placeholder' => 'Escribe aquí tu comentario ...'),
+    '#suffix' => '</div>',
+  );
+  $form['curso_calificar']['opinion2_titulo'] = array(
+    '#markup' => '
+    <div class="small-12 columns">
+      <b>En qué propondrías mejorarlo?</b>
+    </div>',
+  );
+  $form['curso_calificar']['opinion2_campo'] = array(
+    '#prefix' => '<div class="small-12 columns">',
+    '#type' => 'textarea',
+    '#resizable' => FALSE,
+    '#attributes' =>array('placeholder' => 'Escribe aquí tu comentario ...'),
+    '#suffix' => '</div>',
+  );
+  $form['curso_calificar']['calificar_boton'] = array(
+    '#prefix' => '<div class="small-12 columns">',
+    '#type' => 'submit',
+    '#value' => t('Calificar curso'),
+    '#suffix' => '</div>',
+  );
+  $form['curso_calificar']['cancelar_calificacion'] = array(
+    '#prefix' => '<div class="small-12 columns">',
+    '#type' => 'button',
+    '#value' => t('Cancelar'),
+    '#suffix' => '</div>',
+  );
+  return $form;
+}
+
+/*Formulario - Modal Eliminar*/
+function curso_eliminar_form($form, &$form_state){
+  $form['curso_calificar']['check1'] = array(
+    '#prefix' => '<div class="small-12 columns">',
+    '#type' =>'checkbox', 
+    '#title' => t('Cambio de Contenido'),
+    '#suffix' => '</div>',
+  );
+  $form['curso_calificar']['check2'] = array(
+    '#prefix' => '<div class="small-12 columns">',
+    '#type' =>'checkbox', 
+    '#title' => t('Ya termino el curso'),
+    '#suffix' => '</div>',
+  );
+  $form['curso_calificar']['check3'] = array(
+    '#prefix' => '<div class="small-12 columns">',
+    '#type' =>'checkbox', 
+    '#title' => t('Falta de tiempo para manejarlo'),
+    '#suffix' => '</div>',
+  );
+  $form['curso_calificar']['check4'] = array(
+    '#prefix' => '<div class="small-12 columns">',
+    '#type' =>'checkbox', 
+    '#title' => t('Otro motivo'),
+    '#suffix' => '</div>',
+  );
+  $form['curso_calificar']['calificar_text1'] = array(
+    '#prefix' => '<div class="small-12 columns">',
+    '#type' => 'textarea',
+    '#resizable' => FALSE,
+    '#attributes' =>array('placeholder' => t('Escribe aqui el motivo ...')),
+    '#suffix' => '</div>',
+  );
+  $form['curso_calificar']['hr1'] = array(
+    '#markup' => '<hr>',
+  );
+  $form['curso_calificar']['boton_regresar'] = array(
+    '#prefix' => '<div>',
+    '#type' =>'button', 
+    '#value' => t('Regresar'),
+    '#suffix' => '</div>',
+  );
+  $form['curso_calificar']['boton_eliminar'] = array(
+    '#prefix' => '<a href="#" data-reveal-id="aviso">',
+    '#type' =>'button', 
+    '#value' => t('Eliminar'),
+    '#suffix' => '</a>',
+  );
+  return $form;
+}
+
+/************/
+function mostrar_carrusel_proyectos_usuario($uid_usuario)
+{
+    global $user;
+    $id_slider = 'slider-proyectos-usuarios';
+    $resultados_por_pantalla = 3;
+
+    $tpl = 'elemento-proyectos-usuario';
+    $titulo = PROYECTOS;
+    $tipo = 'proyectos';
+    
+    $items = consultar_proyectos_usuario_db($uid_usuario);
+    
+    $privacidad = $items[0]['field_usuario_privacidad_proyectos'];
+
+    if ($privacidad == 0){
+        return '';
+    }    
+
+    $info = $items[0]['array_proyectos'];        
+    return  mostrar_carrusel($resultados_por_pantalla, $info, $tpl, $id_slider, $titulo, $tipo);    
+
+}

@@ -1,0 +1,253 @@
+<?php
+/** 
+* Modulo de creación de cursos
+* creado por Ricardo Aguilera
+* ricardo.aguilera@playfullinteractive.com
+* Módulo para gestionar la creación y edición de cursos
+* Diseñado para el Proyecto de Future Education.
+* Octubre 2014
+*
+*
+*/
+
+/**
+* ====================LEEME====================
+* Para que éste módulo funcione adecuadamente, se debe de habilitar los siguientes bloques de la manera que se mencina:
+* -creación de curso - menú de estátus: 
+*   Ubicarlo en la sidebar first(o la barra lateral del lado izquierdo) y configurarlo para que se 
+*   muestre sólo bajo los siguientes paths:
+*     cursoNuevo
+*     cursoNuevo*
+* -creación de curso - formulario general: 
+*   Ubicarlo en la sidebar first(o la barra lateral del lado izquierdo) y configurarlo para que se 
+*   muestre sólo bajo los siguientes paths:
+*     cursoNuevo
+*     cursoNuevo*
+*
+*
+*/
+
+
+
+
+//Incluir todas las partes del formulario; se separaron para que se pudiera trabajar más libremente en diferentes archivos 
+//por diferentes personas.
+
+
+module_load_include('inc', 'creacioncurso', 'includes/creacioncurso.navigation');
+module_load_include('inc', 'creacioncurso', 'includes/creacioncurso.validate');
+module_load_include('inc', 'creacioncurso', 'includes/creacioncurso.submit');
+module_load_include('inc', 'creacioncurso', 'includes/creacioncurso.form');
+module_load_include('inc', 'creacioncurso', 'includes/creacioncurso.misc');
+module_load_include('inc', 'creacioncurso', 'includes/custom/custom-creacion-canales');
+module_load_include('inc', 'fedcorefront', 'includes/global.copywrite');
+
+drupal_add_css(drupal_get_path('theme', 'future_ed') . '/custom-scss/creacion-cursos.css');
+//drupal_add_css('css/creacioncurso.css', array('type' => 'external'));
+
+
+/**
+ * Implements hook_menu().
+ */
+function creacioncurso_menu() {
+
+  $items = array();
+  
+  $items['cursoNuevo'] = array(
+    'title' => TITULO_FORMULARIO_CURSO,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('creacioncurso_form'),
+    'access arguments' => array('access content'),
+    'file' => 'includes/creacioncurso.form.inc',
+    'type' => MENU_CALLBACK,
+  );
+  
+  $items['cursoCompleto'] = array(
+    'title' => TITULO_FORMULARIO_COMPLETO,
+    'page callback' => 'creacioncurso_complete',
+    'page arguments' => array(),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  
+  return $items;
+}
+
+/**
+  * Implements hook_theme().
+  */
+/* function creacioncurso_theme() {
+  return array( 'creacioncurso_form' => array(
+      'render element' => 'form',
+      'path' => drupal_get_path('module', 'creacioncurso') . '/templates',
+      'template' => 'prueba1',
+    ),
+  );
+}*/
+
+
+/*
+ * Implements hook_mail().
+ */
+
+function creacioncurso_block_info() {
+
+  $blocks['cursocreacion-menu'] = array(
+    'info' => t('creación de curso - menú de estátus'), 
+    'cache' => DRUPAL_NO_CACHE, //there are a number of caching options for this
+  );
+  $blocks['cursocreacion-formulario'] = array(
+    'info' => t('creación de curso - Formulario General'), 
+    'cache' => DRUPAL_NO_CACHE, //there are a number of caching options for this
+  );
+  $blocks['cursocreacion-path'] = array(
+    'info' => t('creación de curso - Path'), 
+    'cache' => DRUPAL_NO_CACHE, //there are a number of caching options for this
+  );
+  return $blocks;
+}
+
+function creacioncurso_block_view($delta = ''){
+  
+  $block = array();
+  if(user_access('access content')){ //good idea to check user perms here
+       //$block['subject'] = t('Configuración de la Cuenta');
+       $block['content'] = creacioncurso_cargar($delta);
+  }
+  return $block;
+}
+
+function creacioncurso_cargar($tipoBusqueda){
+  global $user;
+  $items = array();
+
+  $items['path'] = drupal_get_path('module', 'creacioncurso'); //no modificar
+  $items['tipo'] = $tipoBusqueda; //no modificar
+  $items['data'] = creacioncurso_consultar_db($tipoBusqueda);
+  $items['user'] = $user;
+  $items['node'] = $_SESSION['node'];
+// this is where the $items get sent to your default MYMODULE_BLOCK.tpl.php that gets 
+// registered below
+
+  return theme('creacioncurso', array('items' => $items)); 
+}
+
+
+//here you are registering your default tpl for the above block 
+function creacioncurso_theme() {  
+  
+  $module_path = drupal_get_path('module', 'creacioncurso');
+  $items=array();
+  /*$items = array(
+    'user'=> $user,
+    'sesion'=> $_SESSION,
+    )*/
+  $base = array(
+    'path' => "$module_path/templates",   
+  );
+
+
+  return array(
+    'creacioncurso' => $base + array(
+      'template' => 'creacioncurso',  //leave off .tpl.php
+      'variables' => array('items' => $items,),
+    ),
+
+
+    /*----Seleccion Canal----*/
+    /*Mis Canales*/
+    'seleccion_mis_canales' => array(
+      'variables' => array('items' => $items),
+      'template' => 'templates/canales/seleccion_mis_canales',
+    ),
+    /*Canales que administro*/
+    'seleccion_canales_administrar' => array(
+      'variables' => array('items' => $items),
+      'template' => 'templates/canales/seleccion_canales_administrar',
+    ),
+    /*****************/   
+
+
+  ); 
+}
+
+
+
+function creacioncurso_consultar_db($tipo){
+  $arrResultados = array(0=>"PATH =)",1=>"valor");
+
+  return $arrResultados;
+
+}
+
+
+function creacioncurso_mail($key, &$message, $params) {
+    
+  if (isset($params['subject'])) {
+    $message['subject'] = $params['subject'];
+  } 
+  if (isset($params['body'])) {
+    $message['body'][] = $params['body']; 
+  }
+  if (isset($params['headers']) && is_array($params['headers'])) {   
+    $message['headers'] += $params['headers'];
+  }
+  
+}
+
+
+/*----Seleccion Canal----*/
+/*Mis Canales*/
+function show_seleccionar_mis_canales($uid, $pagina, $div_contenedor){
+
+  $resultadosPorPagina = 8;
+  $resultadosPorLinea = 4;
+
+  if ($pagina == null)
+      $pagina = 1;
+
+  $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+  $lim_fin = $pagina * $resultadosPorPagina;
+
+  $items = consultar_seleccionar_mis_canales_db($uid, $lim_ini, $lim_fin);
+  $itemsProyectos = $items[0]['items'];
+
+  $theme_individual = 'seleccion_mis_canales';
+
+  //Paginación
+  $f_name = 'show_seleccionar_mis_canales'; 
+  $parametros = 'nid_canal: '.$nid_canal;
+  $tema_paginacion = 'paginacion';
+  
+  $totalResultados = $items[0]['totalResultados']; 
+   
+  mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos,  $theme_individual);
+  mostrar_paginacion($resultadosPorPagina,$itemsProyectos,$totalResultados,$f_name,$parametros,$div_contenedor,$tema_paginacion, $pagina);
+}
+
+/*Canales que administro*/
+function show_seleccionar_canales_administrar($uid, $pagina, $div_contenedor){
+  $resultadosPorPagina = 8;
+  $resultadosPorLinea = 4;
+
+  if ($pagina == null)
+      $pagina = 1;
+
+  $lim_ini = (($pagina - 1)* $resultadosPorPagina) + 1;
+  $lim_fin = $pagina * $resultadosPorPagina;
+
+  $items = consultar_seleccionar_canales_administrar_db($uid, $lim_ini, $lim_fin);
+  $itemsProyectos = $items[0]['items'];
+
+  $theme_individual = 'seleccion_canales_administrar';
+
+  //Paginación
+  $f_name = 'show_seleccionar_canales_administrar'; 
+  $parametros = 'nid_canal: '.$nid_canal;
+  $tema_paginacion = 'paginacion';
+    
+  $totalResultados = $items[0]['totalResultados']; 
+
+  mostrar_listado($resultadosPorLinea, $resultadosPorPagina, $itemsProyectos,  $theme_individual);
+  mostrar_paginacion($resultadosPorPagina,$itemsProyectos,$totalResultados,$f_name,$parametros,$div_contenedor,$tema_paginacion, $pagina);
+}

@@ -1,0 +1,5 @@
+name = Perfil
+description = Perfil del usuario.
+core = 7.x
+version = 1.0
+package = FUTUREED

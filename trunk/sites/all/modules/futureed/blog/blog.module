@@ -1,0 +1,70 @@
+<?php
+
+/*
+Modulo creado por: Rene Camacho
+
+module_load_include('inc','fedcorefront','inc/custom');
+module_load_include('inc','fedcorefront','includes/global.copywrite');
+
+/*
+Templates
+
+function perfil_theme($existing,$type,$theme,$path){
+  return array(
+    '' => array(
+      'variables' => array('items' => NULL),
+      'template' => 'templates/',
+    ),
+  );
+}
+
+/*
+Informacion de Bloques
+
+function perfil_block_info(){
+  $blocks[''] = array(
+    'info' => t(''),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  return $blocks;
+}
+
+/*
+Mostrando Bloques
+
+function perfil_block_view($delta = ''){
+  switch ($delta) {
+    case '':
+      $block['content'] = show_showcase_detalle($delta);
+      return $block;
+      break; 
+  }
+}
+
+/*
+Menu
+
+function perfil_menu(){
+  $items[''] = array(
+    'title' => '',
+    'page callback' => '',
+    'page arguments' => array(NULL),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+/*
+Mostrando Templates
+
+function show_($uid){
+  return theme('', array('' => $,));
+}
+
+/*
+Creando Formulario
+
+function _form($form, &$form_state){
+  return $form;
+}*/

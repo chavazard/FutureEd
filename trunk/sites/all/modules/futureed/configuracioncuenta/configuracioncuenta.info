@@ -1,0 +1,4 @@
+name = Configuración de Cuenta	
+description = Formulario para la configuración de la cuenta
+core = 7.x
+package = FUTUREED

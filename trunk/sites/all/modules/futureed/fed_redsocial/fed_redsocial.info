@@ -1,0 +1,5 @@
+name = Red Social
+description = Red Social de FutureEd
+core = 7.x
+version = 1.0
+package = FUTUREED

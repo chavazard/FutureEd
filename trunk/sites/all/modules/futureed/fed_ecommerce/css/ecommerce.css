@@ -1,0 +1,12 @@
+#block-fed-ecommerce-cart-items{
+	margin: 50px 0;
+}
+#block-fed-ecommerce-cart-summary-block{
+	margin: 50px 0;
+	background-color: #fff;
+	padding: 30px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	border-bottom: solid 3px #e2e3e7;
+}

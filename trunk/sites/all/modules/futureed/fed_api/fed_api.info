@@ -1,0 +1,9 @@
+
+name = API for FutureED
+description = API Functionality
+core = 7.x
+version = 7.0
+package = FUTUREED
+
+stylesheets[all][] = css/api.css
+scripts[] = js/api.js

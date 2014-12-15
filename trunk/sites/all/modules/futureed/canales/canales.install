@@ -1,0 +1,54 @@
+<?php
+/**
+ * Implements hook_schema().
+ */
+function canales_schema() {
+
+  $schema = array();
+
+  $schema['canal'] = array(
+    'description' => 'Tabla para administrar los canales',
+    'fields' => array(
+      'intCanal' => array(
+        'description' => 'Llave primaria',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'intEstatus' => array(
+        'description' => 'Estátus. 1)Creado, 2)Eliminado',
+        'type' => 'int',
+        'size' => 'tiny',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'uid' => array(
+        'description' => 'id unico del nodo',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'strNombreCanal' => array(
+        'description' => 'Nombre del Canal',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'timeCreado' => array(
+        'description' => 'The Unix timestamp when the node was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'timeModificado' => array(
+        'description' => 'The Unix timestamp when the node was most recently saved.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('intCanal'),
+  );
+
+  return $schema;
+}

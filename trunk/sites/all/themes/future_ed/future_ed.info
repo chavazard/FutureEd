@@ -1,0 +1,83 @@
+
+name = Future ED
+description = New theme for FutureED
+package = Core
+version = VERSION
+core = 7.x
+
+stylesheets[all][] = css/vendor/normalize.css
+stylesheets[all][] = css/vendor/foundation.min.css
+stylesheets[all][] = css/styles.css
+;stylesheets[print][] = css/print.css
+
+scripts[] = js/vendor/foundation.min.js
+
+regions[header] = Header
+
+regions[featured] = Featured
+regions[sidebar_mini_first] = Sidebar mini first
+regions[sidebar_first] = Sidebar first
+regions[content] = Content
+regions[content_sidebar_first] = Content sidebar first
+regions[content_sidebar_second] = Content sidebar second
+regions[subcontent_sidebar_first] = Subcontent sidebar first
+regions[subcontent_sidebar_second] = Subcontent sidebar second
+regions[subcontent_sidebar_first_larger] = Subcontent sidebar first larger
+regions[subcontent_sidebar_second_smaller] = Subcontent sidebar second smaller
+regions[sidebar_second] = Sidebar second
+
+regions[footer] = Footer
+
+settings[shortcut_module_link] = 0
+
+;JQUERY
+scripts[] = js/vendor/custom.modernizr.js
+scripts[] = js/vendor/jquery.js
+scripts[] = js/jquery/jquery-1.10.2.js
+
+;CUSTOM CSS
+;stylesheets[all][] = custom-css/futureEd.css
+stylesheets[all][] = custom-scss/futureEd.css
+
+;FOUNDATION
+scripts[] = js/foundation/foundation.min.js
+;scripts[] = js/foundation/app.js
+; Foundation framework scripts (uncompressed).
+scripts[] = js/foundation/foundation.js
+;scripts[] = js/foundation/foundation.abide.js
+;scripts[] = js/foundation/foundation.alerts.js
+;scripts[] = js/foundation/foundation.clearing.js
+;scripts[] = js/foundation/foundation.cookie.js
+;scripts[] = js/foundation/foundation.dropdown.js
+;scripts[] = js/foundation/foundation.forms.js
+;scripts[] = js/foundation/foundation.interchange.js
+;scripts[] = js/foundation/foundation.joyride.js
+;scripts[] = js/foundation/foundation.magellan.js
+;scripts[] = js/foundation/foundation.orbit.js
+;scripts[] = js/foundation/foundation.placeholder.js
+;scripts[] = js/foundation/foundation.reveal.js
+;scripts[] = js/foundation/foundation.section.js
+;scripts[] = js/foundation/foundation.tooltips.js
+;scripts[] = js/foundation/foundation.topbar.js
+
+
+;CUSTOM JS
+scripts[] = js/custom-js.js
+
+
+;LIQUID SLIDER
+;IMPORTANTE DEBE IR AL FINAL PARA QUE NO CAUSE CONFLICTO CON FOUNDATION
+scripts[] = js/liquidslider/jquery.easing.1.3.js
+scripts[] = js/liquidslider/jquery.touchSwipe.min.js
+scripts[] = js/liquidslider/jquery.liquid-slider.min.js
+stylesheets[all][] = custom-css/liquid-slider.css 
+
+;JQUERY-UI (Slider, autocomplete)
+scripts[] = js/jquery-ui/jquery-ui.js
+stylesheets[all][] = css/jquery-ui/jquery-ui.css
+
+; Information added by Drupal.org packaging script on 2014-10-15
+version = "7.32"
+project = "drupal"
+datestamp = "1413387510"
+

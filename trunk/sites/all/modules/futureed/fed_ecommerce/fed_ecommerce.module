@@ -1,0 +1,83 @@
+<?php
+
+	module_load_include('inc', 'fed_ecommerce', 'inc/fed_ecommerce');
+	
+	function fed_ecommerce_menu(){
+		 $items['compra'] = array(
+      'page callback' => 'get_compra_tpl',
+      'access arguments' => array('access content')
+    );
+    
+    return $items;
+	}
+
+	function fed_ecommerce_block_info() {
+
+	  $blocks['cart_items'] = array(
+	    'info' => t('Cart Items'),
+	    'cache' => DRUPAL_NO_CACHE,
+	  );
+
+	  $blocks['cart_summary_block'] = array(
+	    'info' => t('Cart Summary Block'),
+	    'cache' => DRUPAL_NO_CACHE,
+	  );
+
+	  $blocks['header_demo'] = array(
+	    'info' => t('Header Demo'),
+	    'cache' => DRUPAL_NO_CACHE,
+	  );
+
+	  $blocks['footer_demo'] = array(
+	    'info' => t('Footer Demo'),
+	    'cache' => DRUPAL_NO_CACHE,
+	  );
+
+	  return $blocks;
+	}
+
+	function fed_ecommerce_block_view($delta = '') {
+	  $block = array();
+
+	  switch ($delta) {
+	    case 'cart_items':
+	      $block['subject'] = null;
+	      $block['content'] = theme('cart_items');
+	      break;
+	    case 'header_demo':
+	      $block['subject'] = null;
+	      $block['content'] = theme('header');
+	      break;
+	    case 'footer_demo':
+	      $block['subject'] = null;
+	      $block['content'] = theme('footer');
+	      break;
+	    case 'cart_summary_block':
+	      $block['subject'] = null;
+	      $block['content'] = theme('cart_summary_block');
+	      break;
+	  }
+
+	  return $block;
+	}
+
+	function fed_ecommerce_theme() {
+	  return array(
+	    'header' => array(
+	      'variables' => array('items' => array()),
+	      'template' => 'templates/header'
+	    ),
+	    'footer' => array(
+	      'variables' => array('items' => array()),
+	      'template' => 'templates/footer'
+	    ),
+	    'cart_items' => array(
+	      'variables' => array('items' => array()),
+	      'template' => 'templates/cart_items'
+	    ),
+	    'cart_summary_block' => array(
+	      'variables' => array('items' => array()),
+	      'template' => 'templates/cart_summary_block'
+	    )
+	  );
+	}

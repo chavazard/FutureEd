@@ -1,0 +1,4 @@
+name = Creación de cursos	
+description = Formulario para la creación de cursos
+core = 7.x
+package = FUTUREED
